@@ -9,5 +9,5 @@ gfcli:
   gen:
     dao:
       link: "mysql:root:root@tcp(127.0.0.1:3306)/iot_device_simulation"
-      tables: "device,mqtt_parameter"
+      tables: "device,mqtt_parameter,topic,publish_info"
       jsonCase: "Snake"

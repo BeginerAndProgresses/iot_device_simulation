@@ -8,6 +8,7 @@ import (
 	"iot_device_simulation/internal/model/do"
 	"iot_device_simulation/internal/model/entity"
 	"iot_device_simulation/internal/packed/conn"
+	"iot_device_simulation/internal/packed/util"
 	"iot_device_simulation/internal/service"
 )
 
@@ -116,5 +117,25 @@ func (i *iDevice) DisConnMqtt(ctx context.Context, deviceId int) (id, state int,
 		fmt.Println("error updating device", err)
 		return
 	}
+	return
+}
+
+func (i *iDevice) InfoPost(ctx context.Context, deviceId, topicId int, json string) (err error) {
+	//上报数据
+	//获取连接参数
+	var (
+		t_dev   entity.Device
+		t_topic entity.Topic
+	)
+	err = dao.Device.Ctx(ctx).Where("id", deviceId).Scan(&t_dev)
+	err = dao.Topic.Ctx(ctx).Where("id", topicId).Scan(&t_topic)
+	m := make(map[string]string)
+	m["deviceName"] = t_dev.DeviceName
+	m["ProductKey"] = t_dev.ProductId
+	topic := util.VariableString2String(t_topic.Topic, m)
+	_, err = dao.PublishInfo.Ctx(ctx).Data(do.PublishInfo{Topic: topic, Json: json}).Insert()
+	//id, err := result.LastInsertId()
+	fmt.Printf("topic", topic)
+	err = conn.Publish(deviceId, topic, json)
 	return
 }

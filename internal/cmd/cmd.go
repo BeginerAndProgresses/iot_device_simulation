@@ -7,6 +7,7 @@ import (
 	"github.com/gogf/gf/v2/os/gcmd"
 	"iot_device_simulation/internal/controller/device"
 	"iot_device_simulation/internal/controller/mqtt_parameter"
+	"iot_device_simulation/internal/controller/topic"
 )
 
 var (
@@ -23,6 +24,9 @@ var (
 				})
 				group.Group("/mqtt", func(group *ghttp.RouterGroup) {
 					group.Bind(mqtt_parameter.MqttController)
+				})
+				group.Group("/topic", func(group *ghttp.RouterGroup) {
+					group.Bind(topic.TopicController)
 				})
 				group.GET("/swagger", func(req *ghttp.Request) {
 					req.Response.WriteTpl("/swagger.html")

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"iot_device_simulation/internal/model/entity"
+	"time"
 )
 
 var (
@@ -46,6 +47,7 @@ func Conn(device_id int, parameter *entity.MqttParameter) (err error) {
 			opts.SetDefaultPublishHandler(messagePubHandler)
 			opts.OnConnect = connectHandler
 			opts.OnConnectionLost = connectLostHandler
+			opts.KeepAlive = 30000
 		}
 		client = mqtt.NewClient(opts)
 		connServer[device_id] = client
@@ -63,6 +65,26 @@ func DisConn(device_id int) (err error) {
 		fmt.Printf("不存在连接 device_id", device_id)
 	} else {
 		client.Disconnect(250)
+	}
+	return
+}
+
+// Publish 推送数据
+func Publish(device_id int, topic, json string) (err error) {
+	fmt.Printf("---------------")
+	fmt.Printf("json", json, "topic", topic)
+	if client, ok := connServer[device_id]; !ok {
+		fmt.Printf("不存在连接 device_id", device_id)
+		return errors.New(fmt.Sprintf("不存在连接 device_id:%d", device_id))
+	} else {
+		if client.IsConnected() {
+			fmt.Printf("尝试发送")
+			token := client.Publish(topic, 0, false, json)
+			token.Wait()
+			time.Sleep(time.Second)
+		} else {
+			fmt.Printf("发送失败")
+		}
 	}
 	return
 }

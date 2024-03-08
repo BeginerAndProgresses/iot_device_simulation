@@ -25,6 +25,7 @@ type DeviceColumns struct {
 	DeviceName      string // 设备名称
 	MqttParameterId string //
 	State           string // 状态，如果未启动为0，如果启动为1
+	ProductId       string // 产品id
 }
 
 // deviceColumns holds the columns for table device.
@@ -34,6 +35,7 @@ var deviceColumns = DeviceColumns{
 	DeviceName:      "device_name",
 	MqttParameterId: "mqtt_parameter_id",
 	State:           "state",
+	ProductId:       "product_id",
 }
 
 // NewDeviceDao creates and returns a new DAO object for table data access.

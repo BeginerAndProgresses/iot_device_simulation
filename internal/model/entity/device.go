@@ -11,4 +11,5 @@ type Device struct {
 	DeviceName      string `json:"device_name"       ` // 设备名称
 	MqttParameterId uint   `json:"mqtt_parameter_id" ` //
 	State           uint   `json:"state"             ` // 状态，如果未启动为0，如果启动为1
+	ProductId       string `json:"product_id"        ` // 产品id
 }

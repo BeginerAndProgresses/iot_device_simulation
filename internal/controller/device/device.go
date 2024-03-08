@@ -18,6 +18,7 @@ func (c *cDev) Add(ctx context.Context, req *device.AddReq) (res *device.AddRes,
 	id, err := service.Device().Insert(ctx, do.Device{
 		DeviceName: req.DeviceName,
 		PlatForm:   req.Platform,
+		ProductId:  req.ProductId,
 	})
 	res = &device.AddRes{Id: id}
 	return
@@ -27,10 +28,7 @@ func (c *cDev) Search(ctx context.Context, req *device.SearchReq) (res *device.S
 	get, err := service.Device().Get(ctx, req.Id)
 	{
 		res = &device.SearchRes{}
-		res.Device.Id = get.Id
-		res.Device.PlatForm = get.PlatForm
-		res.Device.DeviceName = get.DeviceName
-		res.Device.MqttParameterId = get.MqttParameterId
+		res.Device = get
 	}
 	fmt.Println(*res)
 	return
@@ -52,6 +50,7 @@ func (c *cDev) Edit(ctx context.Context, req *device.EditReq) (res *device.EditR
 		DeviceName:      req.DeviceName,
 		PlatForm:        req.Platform,
 		MqttParameterId: req.MqttParameterId,
+		ProductId:       req.ProductId,
 	})
 	res = &device.EditRes{}
 	res.Id = id
@@ -67,5 +66,17 @@ func (c *cDev) Conn(ctx context.Context, req *device.ConnReq) (res *device.ConnR
 func (c *cDev) DisConn(ctx context.Context, req *device.DisConnReq) (res *device.DisConnRes, err error) {
 	id, state, err := service.Device().DisConnMqtt(ctx, req.Id)
 	res = &device.DisConnRes{Id: id, State: state}
+	return
+}
+
+// TopicPost 上传属性
+func (c *cDev) TopicPost(ctx context.Context, req *device.PubReq) (res *device.PubRes, err error) {
+	err = service.Device().InfoPost(ctx, req.DeviceId, req.TopicId, req.JsonInfo)
+	res = &device.PubRes{}
+	if err != nil {
+		res.Code = 0
+	} else {
+		res.Code = 1
+	}
 	return
 }

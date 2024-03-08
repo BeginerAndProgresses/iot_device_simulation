@@ -20,6 +20,8 @@ type IDevice interface {
 	ConnMqtt(ctx context.Context, deviceId int) (id, state int, err error)
 	// DisConnMqtt 设备下线
 	DisConnMqtt(ctx context.Context, deviceId int) (id, state int, err error)
+	// InfoPost 属性上报
+	InfoPost(ctx context.Context, deviceId, topicId int, json string) (err error)
 }
 
 var localDevice IDevice
