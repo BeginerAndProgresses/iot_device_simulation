@@ -26,10 +26,11 @@ var connectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err
 }
 
 func Conn(device_id int, parameter *entity.MqttParameter) (err error) {
+	fmt.Printf("parameter:", *parameter)
 	if client, ok := connServer[device_id]; ok {
 		if !client.IsConnected() {
 			if token := connServer[device_id].Connect(); token.Wait() && token.Error() != nil {
-				return errors.New("连接失败")
+				return token.Error()
 			}
 		} else {
 			return
@@ -52,7 +53,7 @@ func Conn(device_id int, parameter *entity.MqttParameter) (err error) {
 		client = mqtt.NewClient(opts)
 		connServer[device_id] = client
 		if token := connServer[device_id].Connect(); token.Wait() && token.Error() != nil {
-			return errors.New("连接失败")
+			return token.Error()
 		}
 	}
 	//connChannel[device_id] = make(chan int)

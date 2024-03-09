@@ -126,13 +126,28 @@ func (i *iDevice) InfoPost(ctx context.Context, deviceId, topicId int, json stri
 	var (
 		t_dev   entity.Device
 		t_topic entity.Topic
+		t_mqtt  entity.MqttParameter
+		topic   string
 	)
 	err = dao.Device.Ctx(ctx).Where("id", deviceId).Scan(&t_dev)
 	err = dao.Topic.Ctx(ctx).Where("id", topicId).Scan(&t_topic)
 	m := make(map[string]string)
-	m["deviceName"] = t_dev.DeviceName
-	m["ProductKey"] = t_dev.ProductId
-	topic := util.VariableString2String(t_topic.Topic, m)
+	switch t_topic.PlatForm {
+	case "阿里云":
+		m["deviceName"] = t_dev.DeviceName
+		m["productKey"] = t_dev.ProductId
+		topic = util.VariableString2String(t_topic.Topic, m, "${", "}")
+	case "腾讯云":
+		m["DeviceName"] = t_dev.DeviceName
+		m["ProductID"] = t_dev.ProductId
+		topic = util.VariableString2String(t_topic.Topic, m, "{", "}")
+	case "OneNet":
+	case "华为云":
+		err = dao.MqttParameter.Ctx(ctx).Where("id", t_dev.MqttParameterId).Scan(&t_mqtt)
+		m["device_id"] = t_mqtt.Username
+		topic = util.VariableString2String(t_topic.Topic, m, "{", "}")
+	}
+
 	_, err = dao.PublishInfo.Ctx(ctx).Data(do.PublishInfo{Topic: topic, Json: json}).Insert()
 	//id, err := result.LastInsertId()
 	fmt.Printf("topic", topic)
