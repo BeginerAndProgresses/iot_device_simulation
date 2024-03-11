@@ -10,6 +10,8 @@ import (
 type IDevice interface {
 	// Get 获取单个设备
 	Get(ctx context.Context, id int) (device entity.Device, err error)
+	// GetByPlatform 根据平台名获取设备信息
+	GetByPlatform(ctx context.Context, platform string) (devices []entity.Device, err error)
 	// Insert 插入一个设备
 	Insert(ctx context.Context, device do.Device) (id int, err error)
 	// Update 修改一个设备信息
@@ -20,8 +22,10 @@ type IDevice interface {
 	ConnMqtt(ctx context.Context, deviceId int) (id, state int, err error)
 	// DisConnMqtt 设备下线
 	DisConnMqtt(ctx context.Context, deviceId int) (id, state int, err error)
-	// InfoPost 属性上报
+	// InfoPost 信息上报
 	InfoPost(ctx context.Context, deviceId, topicId int, json string) (err error)
+	// TopicSub 订阅topic
+	TopicSub(ctx context.Context, deviceId, topicId int) (err error)
 }
 
 var localDevice IDevice

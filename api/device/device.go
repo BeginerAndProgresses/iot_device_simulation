@@ -26,6 +26,16 @@ type SearchRes struct {
 	Device entity.Device `json:"device" dc:"设备"`
 }
 
+type SearchByPlatformReq struct {
+	g.Meta   `path:"/search_by_platform" method:"get"`
+	Platform string `p:"platform" v:"required#平台名不能为空" dc:"平台"`
+}
+
+type SearchByPlatformRes struct {
+	Code    int             `json:"code" dc:"是否有返回值"`
+	Devices []entity.Device `json:"devices" dc:"设备列表"`
+}
+
 type DelReq struct {
 	g.Meta `path:"/" method:"delete"`
 	Id     int `p:"id" v:"required|integer|min:1#id不能为空|id只能是整数|最小值不应小于1" dc:"平台"`
@@ -68,7 +78,7 @@ type DisConnRes struct {
 	State int `json:"state" dc:"状态"` // 1 未连接，2 连接中 ，3 未设置链接参数
 }
 
-// 属性上传
+// PubReq 信息上传
 type PubReq struct {
 	g.Meta   `path:"/publish" method:"post"`
 	TopicId  int    `p:"topic_id" v:"required|integer|min:1#topicid不能为空|id只能是整数|最小值不应小于1" dc:"topic_id"`
@@ -77,5 +87,16 @@ type PubReq struct {
 }
 
 type PubRes struct {
+	Code int `json:"code" dc:"返回状态"`
+}
+
+// SubReq 订阅topic
+type SubReq struct {
+	g.Meta   `path:"/subscribe" method:"get"`
+	TopicId  int `p:"topic_id" v:"required|integer|min:1#topicid不能为空|id只能是整数|最小值不应小于1" dc:"topic_id"`
+	DeviceId int `p:"device_id" v:"required|integer|integer|min:1#deviceid不能为空|id只能是整数|最小值不应小于1" dc:"device_id"`
+}
+
+type SubRes struct {
 	Code int `json:"code" dc:"返回状态"`
 }

@@ -29,6 +29,11 @@ func (i *iDevice) Get(ctx context.Context, id int) (device entity.Device, err er
 	return
 }
 
+func (i *iDevice) GetByPlatform(ctx context.Context, platform string) (devices []entity.Device, err error) {
+	err = dao.Device.Ctx(ctx).Where("plat_form", platform).Scan(&devices)
+	return
+}
+
 // Insert 插入一个设备
 func (i *iDevice) Insert(ctx context.Context, device do.Device) (id int, err error) {
 	result, err := dao.Device.Ctx(ctx).Data(device).Insert()
@@ -152,5 +157,41 @@ func (i *iDevice) InfoPost(ctx context.Context, deviceId, topicId int, json stri
 	//id, err := result.LastInsertId()
 	fmt.Printf("topic", topic)
 	err = conn.Publish(deviceId, topic, json)
+	return
+}
+
+// TopicSub 订阅topic
+func (i *iDevice) TopicSub(ctx context.Context, deviceId, topicId int) (err error) {
+	//上报数据
+	//获取连接参数
+	var (
+		t_dev   entity.Device
+		t_topic entity.Topic
+		t_mqtt  entity.MqttParameter
+		topic   string
+	)
+	err = dao.Device.Ctx(ctx).Where("id", deviceId).Scan(&t_dev)
+	err = dao.Topic.Ctx(ctx).Where("id", topicId).Scan(&t_topic)
+	m := make(map[string]string)
+	switch t_topic.PlatForm {
+	case "阿里云":
+		m["deviceName"] = t_dev.DeviceName
+		m["productKey"] = t_dev.ProductId
+		topic = util.VariableString2String(t_topic.Topic, m, "${", "}")
+	case "腾讯云":
+		m["DeviceName"] = t_dev.DeviceName
+		m["ProductID"] = t_dev.ProductId
+		topic = util.VariableString2String(t_topic.Topic, m, "{", "}")
+	case "OneNet":
+	case "华为云":
+		err = dao.MqttParameter.Ctx(ctx).Where("id", t_dev.MqttParameterId).Scan(&t_mqtt)
+		m["device_id"] = t_mqtt.Username
+		topic = util.VariableString2String(t_topic.Topic, m, "{", "}")
+	}
+
+	//_, err = dao.PublishInfo.Ctx(ctx).Data(do.PublishInfo{Topic: topic}).Insert()
+	//id, err := result.LastInsertId()
+	fmt.Printf("topic", topic)
+	err = conn.Subscribe(deviceId, topic)
 	return
 }

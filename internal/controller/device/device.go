@@ -34,6 +34,16 @@ func (c *cDev) Search(ctx context.Context, req *device.SearchReq) (res *device.S
 	return
 }
 
+func (c *cDev) SearchByPlatform(ctx context.Context, req *device.SearchByPlatformReq) (res *device.SearchByPlatformRes, err error) {
+	devices, err := service.Device().GetByPlatform(ctx, req.Platform)
+	{
+		res = &device.SearchByPlatformRes{}
+		res.Devices = devices
+	}
+	//fmt.Println(*res)
+	return
+}
+
 func (c *cDev) Del(ctx context.Context, req *device.DelReq) (res *device.DelRes, err error) {
 	err = service.Device().Delete(ctx, req.Id)
 	res = &device.DelRes{}
@@ -73,6 +83,18 @@ func (c *cDev) DisConn(ctx context.Context, req *device.DisConnReq) (res *device
 func (c *cDev) TopicPost(ctx context.Context, req *device.PubReq) (res *device.PubRes, err error) {
 	err = service.Device().InfoPost(ctx, req.DeviceId, req.TopicId, req.JsonInfo)
 	res = &device.PubRes{}
+	if err != nil {
+		res.Code = 0
+	} else {
+		res.Code = 1
+	}
+	return
+}
+
+// TopicSub topic订阅
+func (c *cDev) TopicSub(ctx context.Context, req *device.SubReq) (res *device.SubRes, err error) {
+	err = service.Device().TopicSub(ctx, req.DeviceId, req.TopicId)
+	res = &device.SubRes{}
 	if err != nil {
 		res.Code = 0
 	} else {

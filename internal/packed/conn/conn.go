@@ -89,3 +89,20 @@ func Publish(device_id int, topic, json string) (err error) {
 	}
 	return
 }
+
+// Subscribe 订阅topic
+func Subscribe(device_id int, topic string) (err error) {
+	if client, ok := connServer[device_id]; !ok {
+		fmt.Printf("不存在连接 device_id", device_id)
+		return errors.New(fmt.Sprintf("不存在连接 device_id:%d", device_id))
+	} else {
+		if client.IsConnected() {
+			fmt.Printf("尝试订阅")
+			token := client.Subscribe(topic, 1, nil)
+			token.Wait()
+		} else {
+			fmt.Printf("订阅失败")
+		}
+	}
+	return
+}
