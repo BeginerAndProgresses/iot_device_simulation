@@ -10,6 +10,7 @@ type AddReq struct {
 	Platform   string `p:"platform" v:"required#平台不能为空" dc:"平台"`
 	DeviceName string `p:"device_name" v:"required#设备名不能为空" dc:"设备名"`
 	ProductId  string `p:"product_id" v:"required#产品ID不能为空" dc:"产品id"`
+	UserId     int    `p:"user_id" v:"required#用户id不能为空" dc:"user_id"`
 }
 
 type AddRes struct {

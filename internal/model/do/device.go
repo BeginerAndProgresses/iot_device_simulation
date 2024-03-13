@@ -17,4 +17,5 @@ type Device struct {
 	MqttParameterId interface{} //
 	State           interface{} // 状态，如果未启动为0，如果启动为1
 	ProductId       interface{} // 产品id
+	UserId          interface{} // 用户id
 }

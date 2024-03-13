@@ -19,6 +19,7 @@ func (c *cDev) Add(ctx context.Context, req *device.AddReq) (res *device.AddRes,
 		DeviceName: req.DeviceName,
 		PlatForm:   req.Platform,
 		ProductId:  req.ProductId,
+		UserId:     req.UserId,
 	})
 	res = &device.AddRes{Id: id}
 	return
