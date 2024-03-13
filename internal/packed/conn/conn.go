@@ -5,13 +5,21 @@ import (
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"iot_device_simulation/internal/model/entity"
+	"sync"
 	"time"
 )
 
 var (
-	//connChannel = make(map[int]chan int)
+	connChannel = struct {
+		Chans map[int]chan int
+		sync.Mutex
+	}{}
 	connServer = make(map[int]mqtt.Client)
 )
+
+func init() {
+	connChannel.Chans = make(map[int]chan int)
+}
 
 var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
 	fmt.Printf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic())
@@ -25,6 +33,7 @@ var connectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err
 	fmt.Printf("Connect lost: %v", err)
 }
 
+// Conn 普通连接
 func Conn(device_id int, parameter *entity.MqttParameter) (err error) {
 	fmt.Printf("parameter:", *parameter)
 	if client, ok := connServer[device_id]; ok {
@@ -61,12 +70,47 @@ func Conn(device_id int, parameter *entity.MqttParameter) (err error) {
 	return nil
 }
 
+// ConcConn 并发连接
+func ConcConn(device_id int, parameter *entity.MqttParameter) (err error) {
+	connChannel.Lock()
+	connChannel.Chans[device_id] = make(chan int)
+	connChannel.Unlock()
+	var broker = parameter.ServerAddress
+	var port = parameter.Port
+	opts := mqtt.NewClientOptions()
+	{
+		opts.AddBroker(fmt.Sprintf("mqtt://%s:%d", broker, port))
+		opts.SetClientID(parameter.ClientId)
+		opts.SetUsername(parameter.Username)
+		opts.SetPassword(parameter.Password)
+		opts.SetDefaultPublishHandler(messagePubHandler)
+		opts.OnConnect = connectHandler
+		opts.OnConnectionLost = connectLostHandler
+		opts.KeepAlive = 30000
+	}
+	client := mqtt.NewClient(opts)
+	if token := client.Connect(); token.Wait() && token.Error() != nil {
+		return token.Error()
+	}
+	<-connChannel.Chans[device_id]
+	client.Disconnect(250)
+	return
+}
+
 func DisConn(device_id int) (err error) {
 	if client, ok := connServer[device_id]; !ok {
 		fmt.Printf("不存在连接 device_id", device_id)
 	} else {
 		client.Disconnect(250)
 	}
+	return
+}
+
+// DisConcConn 并发关闭连接
+func DisConcConn(device_id int) (err error) {
+	connChannel.Lock()
+	connChannel.Chans[device_id] <- 0
+	connChannel.Unlock()
 	return
 }
 

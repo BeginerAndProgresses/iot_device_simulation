@@ -64,7 +64,7 @@ func filter(r *ghttp.Request, path []string) bool {
 }
 
 func (*iMiddleware) CORS(r *ghttp.Request) {
-	//fmt.Printf("请求：", r.URL)
+	fmt.Printf("请求：", r.URL)
 	corsOptions := r.Response.DefaultCORSOptions()
 	corsOptions.AllowDomain = []string{"localhost:5173"}
 	if !r.Response.CORSAllowedOrigin(corsOptions) {

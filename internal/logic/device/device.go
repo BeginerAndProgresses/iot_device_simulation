@@ -85,7 +85,11 @@ func (i *iDevice) ConnMqtt(ctx context.Context, deviceId int) (id, state int, er
 		state = 3
 		return
 	}
-	err = conn.Conn(deviceId, &t_mqtt)
+	//err = conn.Conn(deviceId, &t_mqtt)
+	// 并发进行
+	go func() {
+		err = conn.ConcConn(deviceId, &t_mqtt)
+	}()
 	if err != nil {
 		id = 0
 		state = 0
@@ -109,7 +113,10 @@ func (i *iDevice) DisConnMqtt(ctx context.Context, deviceId int) (id, state int,
 		return
 	}
 	id = deviceId
-	err = conn.DisConn(deviceId)
+	//err = conn.DisConn(deviceId)
+	go func() {
+		err = conn.DisConcConn(deviceId)
+	}()
 	if err != nil {
 		id = 0
 		state = 0

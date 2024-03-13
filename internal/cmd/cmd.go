@@ -9,7 +9,6 @@ import (
 	"iot_device_simulation/internal/controller/mqtt_parameter"
 	"iot_device_simulation/internal/controller/topic"
 	"iot_device_simulation/internal/controller/user"
-	"iot_device_simulation/internal/service"
 )
 
 var (
@@ -20,8 +19,8 @@ var (
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 			s := g.Server()
 			s.Group("/", func(group *ghttp.RouterGroup) {
-				group.Middleware(service.Middleware().Auth)
-				group.Middleware(service.Middleware().CORS)
+				//group.Middleware(service.Middleware().Auth)
+				//group.Middleware(service.Middleware().CORS)
 				group.Middleware(ghttp.MiddlewareHandlerResponse)
 				group.Group("/user", func(group *ghttp.RouterGroup) {
 					group.Bind(user.UserController)
