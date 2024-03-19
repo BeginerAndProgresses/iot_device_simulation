@@ -29,8 +29,17 @@ func (i *iDevice) Get(ctx context.Context, id int) (device entity.Device, err er
 	return
 }
 
-func (i *iDevice) GetByPlatform(ctx context.Context, platform string) (devices []entity.Device, err error) {
-	err = dao.Device.Ctx(ctx).Where("plat_form", platform).Scan(&devices)
+func (i *iDevice) GetByPlatform(ctx context.Context, platform string, userid int) (devices []entity.Device, err error) {
+	switch platform {
+	case "Ali":
+		platform = "阿里云"
+	case "Tencent":
+		platform = "腾讯云"
+	case "Huawei":
+		platform = "华为云"
+	default:
+	}
+	err = dao.Device.Ctx(ctx).Where("user_id", userid).Where("plat_form", platform).Scan(&devices)
 	return
 }
 
@@ -160,10 +169,15 @@ func (i *iDevice) InfoPost(ctx context.Context, deviceId, topicId int, json stri
 		topic = util.VariableString2String(t_topic.Topic, m, "{", "}")
 	}
 
-	_, err = dao.PublishInfo.Ctx(ctx).Data(do.PublishInfo{Topic: topic, Json: json}).Insert()
-	//id, err := result.LastInsertId()
+	result, err := dao.PublishInfo.Ctx(ctx).Data(do.PublishInfo{Topic: topic, Json: json}).Insert()
+	id, err := result.LastInsertId()
+	fmt.Println("oldjson:", json)
+	json = util.ChangeJsonPostId(t_topic.PlatForm, json, int(id))
+	fmt.Println("newjson:", json)
 	fmt.Printf("topic", topic)
-	err = conn.Publish(deviceId, topic, json)
+	go func() {
+		err = conn.ConcPublish(deviceId, topic, json)
+	}()
 	return
 }
 

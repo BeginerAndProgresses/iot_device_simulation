@@ -30,6 +30,7 @@ type SearchRes struct {
 type SearchByPlatformReq struct {
 	g.Meta   `path:"/search_by_platform" method:"get"`
 	Platform string `p:"platform" v:"required#平台名不能为空" dc:"平台"`
+	UserId   int    `p:"userid" v:"required|integer|min:1#id不能为空|id只能是整数|最小值不应小于1" dc:"用户id不能为空"`
 }
 
 type SearchByPlatformRes struct {

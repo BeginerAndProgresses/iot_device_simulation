@@ -36,7 +36,7 @@ func (c *cDev) Search(ctx context.Context, req *device.SearchReq) (res *device.S
 }
 
 func (c *cDev) SearchByPlatform(ctx context.Context, req *device.SearchByPlatformReq) (res *device.SearchByPlatformRes, err error) {
-	devices, err := service.Device().GetByPlatform(ctx, req.Platform)
+	devices, err := service.Device().GetByPlatform(ctx, req.Platform, req.UserId)
 	{
 		res = &device.SearchByPlatformRes{}
 		res.Devices = devices

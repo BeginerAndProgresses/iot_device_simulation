@@ -19,8 +19,9 @@ var (
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 			s := g.Server()
 			s.Group("/", func(group *ghttp.RouterGroup) {
-				//group.Middleware(service.Middleware().Auth)
+				// 二者顺序不可逆转不然请求通过Auth也通不过CORS
 				//group.Middleware(service.Middleware().CORS)
+				//group.Middleware(service.Middleware().Auth)
 				group.Middleware(ghttp.MiddlewareHandlerResponse)
 				group.Group("/user", func(group *ghttp.RouterGroup) {
 					group.Bind(user.UserController)

@@ -32,6 +32,7 @@ func (c *cUser) Login(ctx context.Context, req *user.LoginReq) (res *user.LoginR
 	return
 }
 
+// 过期时间为一天
 func jwtToken(user *entity.User) string {
 	// 实际使用中可将Key存于文件中或放在常量中 consts.JwtTokenKey
 
@@ -39,6 +40,10 @@ func jwtToken(user *entity.User) string {
 		Subject:   user.Username,
 		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
 	}
+	//claim := jwt.MapClaims{
+	//	"Data":      entity.Device{Id: user.Id},
+	//	"ExpiresAt": jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
+	//}
 
 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claim).SignedString([]byte(consts.JwtTokenKey))
 

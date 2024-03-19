@@ -30,6 +30,8 @@ func (*iMiddleware) Auth(r *ghttp.Request) {
 	}
 	var res *ghttp.DefaultHandlerResponse
 	tokenStr := r.Header.Get("Authorization")
+	//fmt.Printf("r.Header %v", r.Header)
+	//fmt.Printf("tokenStr", tokenStr)
 	if tokenStr == "" {
 		res = &ghttp.DefaultHandlerResponse{
 			Code:    403,
@@ -66,8 +68,9 @@ func filter(r *ghttp.Request, path []string) bool {
 func (*iMiddleware) CORS(r *ghttp.Request) {
 	fmt.Printf("请求：", r.URL)
 	corsOptions := r.Response.DefaultCORSOptions()
-	corsOptions.AllowDomain = []string{"localhost:5173"}
+	corsOptions.AllowDomain = []string{"127.0.0.1", "localhost"}
 	if !r.Response.CORSAllowedOrigin(corsOptions) {
+		fmt.Printf("跨域请求未通过：", r.URL)
 		r.Response.WriteStatus(http.StatusForbidden)
 		return
 	}

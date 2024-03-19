@@ -11,7 +11,7 @@ type IDevice interface {
 	// Get 获取单个设备
 	Get(ctx context.Context, id int) (device entity.Device, err error)
 	// GetByPlatform 根据平台名获取设备信息
-	GetByPlatform(ctx context.Context, platform string) (devices []entity.Device, err error)
+	GetByPlatform(ctx context.Context, platform string, userid int) (devices []entity.Device, err error)
 	// Insert 插入一个设备
 	Insert(ctx context.Context, device do.Device) (id int, err error)
 	// Update 修改一个设备信息
