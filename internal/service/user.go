@@ -9,6 +9,8 @@ import (
 type IUser interface {
 	Login(ctx context.Context, username string, password string) (user *entity.User, err error)
 	Register(ctx context.Context, user *do.User) (id int, err error)
+	Search(ctx context.Context, id int) (user entity.User, err error)
+	Update(ctx context.Context, newUser entity.User) (err error)
 }
 
 var localUser IUser

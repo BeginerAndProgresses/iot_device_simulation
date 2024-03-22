@@ -40,7 +40,7 @@ type SearchByPlatformRes struct {
 
 type DelReq struct {
 	g.Meta `path:"/" method:"delete"`
-	Id     int `p:"id" v:"required|integer|min:1#id不能为空|id只能是整数|最小值不应小于1" dc:"平台"`
+	Id     int `p:"id" v:"required|integer|min:1#id不能为空|id只能是整数|最小值不应小于1" dc:"ID"`
 }
 
 type DelRes struct {

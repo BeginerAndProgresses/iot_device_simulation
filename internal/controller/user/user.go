@@ -63,3 +63,20 @@ func (c *cUser) Register(ctx context.Context, req *user.RegisterReq) (res *user.
 	}
 	return
 }
+
+func (c *cUser) SearchUser(ctx context.Context, req *user.SearchReq) (res *user.SearchRes, err error) {
+	search, err := service.User().Search(ctx, req.Id)
+	res = &user.SearchRes{
+		User: search,
+	}
+	if err != nil {
+		res.Code = 0
+	}
+	res.Code = 1
+	return
+}
+
+func (c *cUser) Update(ctx context.Context, req *user.UpdateReq) (res *user.UpdateRes, err error) {
+	err = service.User().Update(ctx, entity.User{Id: req.Id, Avatar: req.AvatarUrl, Nikename: req.NikeName})
+	return
+}

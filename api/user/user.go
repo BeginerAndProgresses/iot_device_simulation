@@ -1,6 +1,9 @@
 package user
 
-import "github.com/gogf/gf/v2/frame/g"
+import (
+	"github.com/gogf/gf/v2/frame/g"
+	"iot_device_simulation/internal/model/entity"
+)
 
 type LoginReq struct {
 	g.Meta   `path:"/login" method:"post"`
@@ -28,4 +31,24 @@ type RegisterReq struct {
 
 type RegisterRes struct {
 	Id int `json:"id" dc:"返回0失败，否则成功"`
+}
+
+type SearchReq struct {
+	g.Meta `path:"/search" method:"get"`
+	Id     int `p:"id" v:"required|integer|min:1#id不能为空|id只能是整数|最小值不应小于1" dc:"ID"`
+}
+
+type SearchRes struct {
+	Code int         `json:"code" dc:"状态码"`
+	User entity.User `json:"user" dc:"用户"`
+}
+
+type UpdateReq struct {
+	g.Meta    `path:"/update" method:"put"`
+	Id        int    `p:"id" v:"required|integer|min:1#id不能为空|id只能是整数|最小值不应小于1" dc:"ID"`
+	NikeName  string `p:"nikeName" v:"required#昵称不能为空" dc:"昵称"`
+	AvatarUrl string `p:"avatarUrl" v:"required#昵称不能为空" dc:"头像"`
+}
+
+type UpdateRes struct {
 }

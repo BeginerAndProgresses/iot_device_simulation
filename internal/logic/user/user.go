@@ -41,3 +41,13 @@ func (i *iUser) Register(ctx context.Context, user *do.User) (id int, err error)
 	}
 	return
 }
+
+func (i *iUser) Search(ctx context.Context, id int) (user entity.User, err error) {
+	err = dao.User.Ctx(ctx).Where("id", id).Scan(&user)
+	return
+}
+
+func (i *iUser) Update(ctx context.Context, newUser entity.User) (err error) {
+	_, err = dao.User.Ctx(ctx).Where("id", newUser.Id).Data(&newUser).OmitEmptyData().Update()
+	return
+}
