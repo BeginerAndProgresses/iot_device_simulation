@@ -4,6 +4,7 @@ package device
 import (
 	"context"
 	"fmt"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"iot_device_simulation/internal/dao"
 	"iot_device_simulation/internal/model/do"
 	"iot_device_simulation/internal/model/entity"
@@ -213,6 +214,22 @@ func (i *iDevice) TopicSub(ctx context.Context, deviceId, topicId int) (err erro
 	//_, err = dao.PublishInfo.Ctx(ctx).Data(do.PublishInfo{Topic: topic}).Insert()
 	//id, err := result.LastInsertId()
 	fmt.Printf("topic", topic)
-	err = conn.Subscribe(deviceId, topic)
+	go func() {
+		err = conn.ConnSubscribe(deviceId, topic, getSubInfo)
+	}()
+	return
+}
+
+func getSubInfo(device_id int, topic string) func(mqtt.Client, mqtt.Message) {
+	return func(client mqtt.Client, msg mqtt.Message) {
+		insertSubInfo(entity.SubscribeInfo{DeviceId: device_id, Topic: topic, SubName: topic, Info: string(msg.Payload())})
+	}
+}
+
+func insertSubInfo(info entity.SubscribeInfo) {
+	_, err := dao.SubscribeInfo.Ctx(context.Background()).Data(info).Insert()
+	if err != nil {
+		fmt.Println("InsertSubInfo err：", err)
+	}
 	return
 }

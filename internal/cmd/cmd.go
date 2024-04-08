@@ -9,7 +9,6 @@ import (
 	"iot_device_simulation/internal/controller/mqtt_parameter"
 	"iot_device_simulation/internal/controller/topic"
 	"iot_device_simulation/internal/controller/user"
-	"iot_device_simulation/internal/service"
 )
 
 var (
@@ -21,8 +20,8 @@ var (
 			s := g.Server()
 			s.Group("/", func(group *ghttp.RouterGroup) {
 				// 二者顺序不可逆转不然请求通过Auth也通不过CORS
-				group.Middleware(service.Middleware().CORS)
-				group.Middleware(service.Middleware().Auth)
+				//group.Middleware(service.Middleware().CORS)
+				//group.Middleware(service.Middleware().Auth)
 				group.Middleware(ghttp.MiddlewareHandlerResponse)
 				group.Group("/user", func(group *ghttp.RouterGroup) {
 					group.Bind(user.UserController)

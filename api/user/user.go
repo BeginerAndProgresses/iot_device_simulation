@@ -46,8 +46,8 @@ type SearchRes struct {
 type UpdateReq struct {
 	g.Meta    `path:"/update" method:"put"`
 	Id        int    `p:"id" v:"required|integer|min:1#id不能为空|id只能是整数|最小值不应小于1" dc:"ID"`
-	NikeName  string `p:"nikeName" v:"required#昵称不能为空" dc:"昵称"`
-	AvatarUrl string `p:"avatarUrl" v:"required#昵称不能为空" dc:"头像"`
+	NikeName  string `p:"nike_name" v:"required#昵称不能为空" dc:"昵称"`
+	AvatarUrl string `p:"avatar_url" v:"required#url不能为空" dc:"头像"`
 }
 
 type UpdateRes struct {

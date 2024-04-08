@@ -8,6 +8,6 @@ gfcli:
       - my.image.pub/my-app
   gen:
     dao:
-      link: "mysql:root:root@tcp(127.0.0.1:3306)/iot_device_simulation"
-      tables: "device,mqtt_parameter,topic,publish_info,user"
+      link: "mysql:root:root@tcp(127.0.0.1:13317)/iot_device_simulation"
+      tables: "device,mqtt_parameter,topic,publish_info,subscribe_info,user"
       jsonCase: "Snake"

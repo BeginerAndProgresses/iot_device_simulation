@@ -102,3 +102,14 @@ type SubReq struct {
 type SubRes struct {
 	Code int `json:"code" dc:"返回状态"`
 }
+
+// SubInfoReq 获取订阅topic返回信息
+type SubInfoReq struct {
+	g.Meta   `path:"/subscribe_info" method:"get"`
+	TopicId  int `p:"topic_id" v:"required|integer|min:1#topicid不能为空|id只能是整数|最小值不应小于1" dc:"topic_id"`
+	DeviceId int `p:"device_id" v:"required|integer|integer|min:1#deviceid不能为空|id只能是整数|最小值不应小于1" dc:"device_id"`
+}
+
+type SubInfoRes struct {
+	Info string `json:"info" dc:"信息"`
+}

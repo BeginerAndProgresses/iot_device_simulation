@@ -13,9 +13,11 @@ import (
 
 var (
 	connChannel = struct {
-		Chans            map[int]chan int
-		PublishTopicChan map[int]chan string
-		PublishJsonChan  map[int]chan string
+		Chans              map[int]chan int
+		PublishTopicChan   map[int]chan string
+		PublishJsonChan    map[int]chan string
+		SubscribeTopicChan map[int]chan string
+		SubscribeFuncChan  map[int]chan func(int, string) func(mqtt.Client, mqtt.Message)
 		sync.Mutex
 	}{}
 	connServer = make(map[int]mqtt.Client)
@@ -25,6 +27,8 @@ func init() {
 	connChannel.Chans = make(map[int]chan int)
 	connChannel.PublishTopicChan = make(map[int]chan string)
 	connChannel.PublishJsonChan = make(map[int]chan string)
+	connChannel.SubscribeTopicChan = make(map[int]chan string)
+	connChannel.SubscribeFuncChan = make(map[int]chan func(int, string) func(mqtt.Client, mqtt.Message))
 }
 
 var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
@@ -111,11 +115,16 @@ func ConcConn(device_id int, parameter *entity.MqttParameter) (err error) {
 				json := <-connChannel.PublishJsonChan[device_id]
 				token := client.Publish(topic, 0, false, json)
 				token.Wait()
-				time.Sleep(time.Second)
 				close(connChannel.PublishTopicChan[device_id])
 				close(connChannel.PublishJsonChan[device_id])
 			case 2:
 
+				topic := <-connChannel.SubscribeTopicChan[device_id]
+				subFunc := <-connChannel.SubscribeFuncChan[device_id]
+				token := client.Subscribe(topic, 1, subFunc(device_id, topic))
+				token.Wait()
+				close(connChannel.SubscribeTopicChan[device_id])
+				close(connChannel.SubscribeFuncChan[device_id])
 			}
 		}
 	}
@@ -184,19 +193,18 @@ func ConcPublish(device_id int, topic, json string) (err error) {
 	return
 }
 
-// Subscribe 订阅topic
-func Subscribe(device_id int, topic string) (err error) {
-	if client, ok := connServer[device_id]; !ok {
-		fmt.Printf("不存在连接 device_id", device_id)
-		return errors.New(fmt.Sprintf("不存在连接 device_id:%d", device_id))
-	} else {
-		if client.IsConnected() {
-			fmt.Printf("尝试订阅")
-			token := client.Subscribe(topic, 1, nil)
-			token.Wait()
-		} else {
-			fmt.Printf("订阅失败")
-		}
+// ConnSubscribe 并发订阅topic
+func ConnSubscribe(device_id int, topic string, subBack func(int, string) func(mqtt.Client, mqtt.Message)) (err error) {
+	if util.IsChanIntClose(connChannel.Chans[device_id]) {
+		err = gerror.New("连接已关闭")
+		return
 	}
+	connChannel.Lock()
+	connChannel.SubscribeTopicChan[device_id] = make(chan string)
+	connChannel.SubscribeFuncChan[device_id] = make(chan func(int, string) func(mqtt.Client, mqtt.Message))
+	connChannel.Unlock()
+	connChannel.Chans[device_id] <- 2
+	connChannel.SubscribeTopicChan[device_id] <- topic
+	connChannel.SubscribeFuncChan[device_id] <- subBack
 	return
 }

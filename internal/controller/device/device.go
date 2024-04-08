@@ -103,3 +103,8 @@ func (c *cDev) TopicSub(ctx context.Context, req *device.SubReq) (res *device.Su
 	}
 	return
 }
+
+// TopicSubInfo topic订阅返回信息获取
+func (c *cDev) TopicSubInfo(ctx context.Context, req *device.SubInfoReq) (res *device.SubInfoRes, err error) {
+	return
+}
