@@ -14,6 +14,7 @@ type cTopic struct {
 
 func (c *cTopic) Add(ctx context.Context, req *topic.AddReq) (res *topic.AddRes, err error) {
 	id, err := service.Topic().Insert(ctx, do.Topic{
+		UserId:           req.UserId,
 		PlatForm:         req.PlatForm,
 		Topic:            req.Topic,
 		FunctionDescribe: req.FunctionDescribe,
@@ -52,5 +53,29 @@ func (c *cTopic) Edit(ctx context.Context, req *topic.EditReq) (res *topic.EditR
 		FunctionDescribe: req.FunctionDescribe,
 	})
 	res = &topic.EditRes{Id: id}
+	return
+}
+
+func (c *cTopic) SearchAllUpTopics(ctx context.Context, req *topic.SearchAllUpTopicReq) (res *topic.SearchAllUpTopicRes, err error) {
+	get, err := service.Topic().GetAllUpTopics(ctx, req.UserId)
+	res = &topic.SearchAllUpTopicRes{}
+	if err != nil {
+		res.Code = 0
+	} else {
+		res.Code = 1
+	}
+	res.Topic = get
+	return
+}
+
+func (c *cTopic) SearchAllDownTopics(ctx context.Context, req *topic.SearchAllDownTopicReq) (res *topic.SearchAllDownTopicRes, err error) {
+	get, err := service.Topic().GetAllDownTopics(ctx, req.UserId)
+	res = &topic.SearchAllDownTopicRes{}
+	if err != nil {
+		res.Code = 0
+	} else {
+		res.Code = 1
+	}
+	res.Topic = get
 	return
 }

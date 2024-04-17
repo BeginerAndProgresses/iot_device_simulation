@@ -6,8 +6,15 @@ gfcli:
     build: "-a amd64 -s linux -p temp -ew"
     tagPrefixes:
       - my.image.pub/my-app
+# docker 的生成器
+#  gen:
+#    dao:
+#      link: "mysql:root:root@tcp(127.0.0.1:13317)/iot_device_simulate"
+#      tables: "device,mqtt_parameter,topic,publish_info,subscribe_info,user"
+#      jsonCase: "Snake"
+#  本地生成器
   gen:
     dao:
-      link: "mysql:root:root@tcp(127.0.0.1:13317)/iot_device_simulation"
-      tables: "device,mqtt_parameter,topic,publish_info,subscribe_info,user"
+      link: "mysql:root:root@tcp(127.0.0.1:3306)/iot_device_simulation"
+      tables: "device,mqtt_parameter,topic,publish_info,subscribe_info,user,sub_topic"
       jsonCase: "Snake"

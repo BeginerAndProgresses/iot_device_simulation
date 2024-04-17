@@ -9,6 +9,7 @@ import (
 	"iot_device_simulation/internal/controller/mqtt_parameter"
 	"iot_device_simulation/internal/controller/topic"
 	"iot_device_simulation/internal/controller/user"
+	"iot_device_simulation/internal/packed/websocket"
 )
 
 var (
@@ -17,6 +18,7 @@ var (
 		Usage: "main",
 		Brief: "start http server",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
+			websocket.StartWebSocket(ctx)
 			s := g.Server()
 			s.Group("/", func(group *ghttp.RouterGroup) {
 				// 二者顺序不可逆转不然请求通过Auth也通不过CORS
@@ -39,6 +41,12 @@ var (
 					req.Response.WriteTpl("/swagger.html")
 				})
 
+			})
+			s.Group("/ws", func(group *ghttp.RouterGroup) {
+				group.Middleware(ghttp.MiddlewareHandlerResponse)
+				group.Bind()
+				//注册路由
+				group.ALL("/socket", websocket.WebSocketHandler)
 			})
 			s.Run()
 			return nil

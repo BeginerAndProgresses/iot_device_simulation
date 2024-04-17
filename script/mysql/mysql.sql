@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS `mqtt_parameter` (
     `server_address` varchar(255) NOT NULL COMMENT '服务器地址',
     `username` varchar(255) NOT NULL COMMENT 'username',
     `password` varchar(255) NOT NULL COMMENT 'password',
+    `user_id` int not null COMMENT '用户id',
     PRIMARY KEY (`id`)
     ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
@@ -28,22 +29,25 @@ CREATE TABLE IF NOT EXISTS `topic` (
                                        `plat_form` varchar(255) NOT NULL COMMENT '平台名',
     `topic` varchar(255) NOT NULL COMMENT '通信topic',
     `function_describe` varchar(255) NOT NULL COMMENT '功能描述',
+    `user_id` int not null comment '用户id',
     PRIMARY KEY (`id`)
     ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `publish_info` (
-                                              `id` int NOT NULL AUTO_INCREMENT COMMENT 'id',
-                                              `json` varchar(255) NOT NULL COMMENT '信息json',
-    `topic` varchar(255) NOT NULL COMMENT '通信topic',
-    PRIMARY KEY (`id`)
-    ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-
+                                              `id` int not null auto_increment COMMENT 'id',
+                                              `json` varchar(255) not null COMMENT '上传信息',
+    `topic` varchar(150) not null COMMENT '通信topic',
+    `pub_date` varchar(50) not null COMMENT '上传时间',
+    `user_id` int not null comment '用户id',
+    PRIMARY KEY(id)
+    )ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 CREATE TABLE IF NOT EXISTS `subscribe_info` (
                                                 `id` int NOT NULL AUTO_INCREMENT,
                                                 `sub_name` varchar(255) NOT NULL,
     `topic` varchar(255) NOT NULL,
     `info` varchar(255) NOT NULL COMMENT '返回的信息',
     `device_id` int NOT NULL,
+    `user_id` int not null comment '用户id',
     PRIMARY KEY (`id`)
     ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 

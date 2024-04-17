@@ -10,8 +10,10 @@ import (
 
 // PublishInfo is the golang structure of table publish_info for DAO operations like Where/Data.
 type PublishInfo struct {
-	g.Meta `orm:"table:publish_info, do:true"`
-	Id     interface{} // id
-	Json   interface{} // 信息json
-	Topic  interface{} // 通信topic
+	g.Meta  `orm:"table:publish_info, do:true"`
+	Id      interface{} // id
+	Json    interface{} // ä¸Šä¼ ä¿¡æ¯
+	Topic   interface{} // é€šä¿¡topic
+	PubDate interface{} // ä¸Šä¼ æ—¶é—´
+	UserId  interface{} // ç”¨æˆ·id
 }

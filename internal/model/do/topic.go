@@ -12,7 +12,9 @@ import (
 type Topic struct {
 	g.Meta           `orm:"table:topic, do:true"`
 	Id               interface{} // id
-	PlatForm         interface{} // 平台名
-	Topic            interface{} // 通信topic
-	FunctionDescribe interface{} // 功能描述
+	PlatForm         interface{} // å¹³å°å
+	Topic            interface{} // é€šä¿¡topic
+	FunctionDescribe interface{} // åŠŸèƒ½æè¿°
+	UserId           interface{} // ç”¨æˆ·id
+	TType            interface{} // 订阅为1，上报为0
 }

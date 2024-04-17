@@ -100,6 +100,7 @@ func ConcConn(device_id int, parameter *entity.MqttParameter) (err error) {
 	}
 	client := mqtt.NewClient(opts)
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
+		fmt.Printf("Error connecting device_id:%d,Error:%v\n", device_id, token.Error())
 		return token.Error()
 	}
 	// connChannel.Chans[device_id] 通道中传入不同值进行不同操作，0停止，1发送，2订阅

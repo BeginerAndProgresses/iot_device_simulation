@@ -55,7 +55,7 @@ func jwtToken(user *entity.User) string {
 }
 
 func (c *cUser) Register(ctx context.Context, req *user.RegisterReq) (res *user.RegisterRes, err error) {
-	id, err := service.User().Register(ctx, &do.User{Username: req.Username, Password: req.Password})
+	id, err := service.User().Register(ctx, do.User{Username: req.Username, Password: req.Password})
 	if err == nil {
 		res = &user.RegisterRes{
 			Id: id,

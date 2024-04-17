@@ -11,6 +11,8 @@ import (
 	"iot_device_simulation/internal/packed/conn"
 	"iot_device_simulation/internal/packed/util"
 	"iot_device_simulation/internal/service"
+	"strconv"
+	"time"
 )
 
 func init() {
@@ -142,7 +144,7 @@ func (i *iDevice) DisConnMqtt(ctx context.Context, deviceId int) (id, state int,
 	return
 }
 
-func (i *iDevice) InfoPost(ctx context.Context, deviceId, topicId int, json string) (err error) {
+func (i *iDevice) InfoPost(ctx context.Context, userId, deviceId, topicId int, json string) (err error) {
 	//上报数据
 	//获取连接参数
 	var (
@@ -169,8 +171,8 @@ func (i *iDevice) InfoPost(ctx context.Context, deviceId, topicId int, json stri
 		m["device_id"] = t_mqtt.Username
 		topic = util.VariableString2String(t_topic.Topic, m, "{", "}")
 	}
-
-	result, err := dao.PublishInfo.Ctx(ctx).Data(do.PublishInfo{Topic: topic, Json: json}).Insert()
+	nowDate := time.Now().String()[:10]
+	result, err := dao.PublishInfo.Ctx(ctx).Data(do.PublishInfo{UserId: userId, Topic: topic, Json: json, PubDate: nowDate}).Insert()
 	id, err := result.LastInsertId()
 	fmt.Println("oldjson:", json)
 	json = util.ChangeJsonPostId(t_topic.PlatForm, json, int(id))
@@ -216,8 +218,96 @@ func (i *iDevice) TopicSub(ctx context.Context, deviceId, topicId int) (err erro
 	fmt.Printf("topic", topic)
 	go func() {
 		err = conn.ConnSubscribe(deviceId, topic, getSubInfo)
+		if err != nil {
+			fmt.Println("进行订阅失败", err)
+		}
+		err = i.AddSubTopic(ctx, do.SubTopic{DeviceId: deviceId,
+			TopicId: topicId, State: 1, SubTopic: topic,
+			Url: "/" + strconv.Itoa(deviceId) + "/" + strconv.Itoa(topicId)})
+		if err != nil {
+			fmt.Println("添加订阅失败", err)
+		}
 	}()
 	return
+}
+
+func (i *iDevice) AddSubTopic(ctx context.Context, subTopic do.SubTopic) error {
+	_, err := dao.SubTopic.Ctx(ctx).Data(subTopic).Insert()
+	return err
+}
+
+func (i *iDevice) GetByUID(ctx context.Context, userid int) (TencentDevice, HuaweiDevice, AliyunDevice []entity.Device, err error) {
+	err = dao.Device.Ctx(ctx).Where("user_id", userid).Where("plat_form", "腾讯云").Scan(&TencentDevice)
+	if err != nil {
+		return
+	}
+	dao.Device.Ctx(ctx).Where("user_id", userid).Where("plat_form", "华为云").Scan(&HuaweiDevice)
+	if err != nil {
+		return
+	}
+	dao.Device.Ctx(ctx).Where("user_id", userid).Where("plat_form", "阿里云").Scan(&AliyunDevice)
+	if err != nil {
+		return
+	}
+	return
+}
+
+func (i *iDevice) GetChatDataInfo(ctx context.Context, userid int, days int) (times []string, lineData, barOnlineData, barOffOnlineData []int, err error) {
+	count, err := dao.Device.Ctx(ctx).Where("user_id", userid).Where("state", 2).Where("plat_form", "腾讯云").Count()
+	if err != nil {
+		return
+	}
+	barOnlineData = append(barOnlineData, count)
+	count, err = dao.Device.Ctx(ctx).Where("user_id", userid).Where("state", 2).Where("plat_form", "阿里云").Count()
+	if err != nil {
+		return
+	}
+	barOnlineData = append(barOnlineData, count)
+	count, err = dao.Device.Ctx(ctx).Where("user_id", userid).Where("state", 2).Where("plat_form", "华为云").Count()
+	if err != nil {
+		return
+	}
+	barOnlineData = append(barOnlineData, count)
+
+	count, err = dao.Device.Ctx(ctx).Where("user_id", userid).Where("state", 1).Where("plat_form", "腾讯云").Count()
+	if err != nil {
+		return
+	}
+	barOffOnlineData = append(barOffOnlineData, count)
+	count, err = dao.Device.Ctx(ctx).Where("user_id", userid).Where("state", 1).Where("plat_form", "阿里云").Count()
+	if err != nil {
+		return
+	}
+	barOffOnlineData = append(barOffOnlineData, count)
+	count, err = dao.Device.Ctx(ctx).Where("user_id", userid).Where("state", 1).Where("plat_form", "华为云").Count()
+	if err != nil {
+		return
+	}
+	barOffOnlineData = append(barOffOnlineData, count)
+
+	times = getTimes(days)
+	for _, v := range times {
+		count, err = dao.PublishInfo.Ctx(ctx).Where("user_id", userid).Where("pub_date", v).Count()
+		if err != nil {
+			return
+		}
+		lineData = append(lineData, count)
+	}
+	return
+}
+
+func (i *iDevice) GetSubTopic(ctx context.Context, deviceId int) (topics []entity.SubTopic, err error) {
+	err = dao.SubTopic.Ctx(ctx).Where("device_id", deviceId).Scan(&topics)
+	return
+}
+
+func getTimes(days int) []string {
+	t := time.Now()
+	times := make([]string, 0, days)
+	for i := 0; i < days; i++ {
+		times = append(times, t.AddDate(0, 0, -i).Format("2006-01-02"))
+	}
+	return times
 }
 
 func getSubInfo(device_id int, topic string) func(mqtt.Client, mqtt.Message) {
@@ -232,4 +322,23 @@ func insertSubInfo(info entity.SubscribeInfo) {
 		fmt.Println("InsertSubInfo err：", err)
 	}
 	return
+}
+
+// CloseDevice 关闭所有设备
+func CloseDevice(ctx context.Context, userId int) {
+	var devices []entity.Device
+	err := dao.Device.Ctx(ctx).Where("user_id", userId).Scan(&devices)
+	if err != nil {
+		return
+	}
+	//fmt.Println("devices", devices)
+	for _, v := range devices {
+		if v.State == 2 {
+			_, err = dao.Device.Ctx(ctx).Where("id", v.Id).Data(do.Device{State: 1}).OmitEmptyData().Update()
+			//fmt.Println("close device", v.Id)
+			if err != nil {
+				return
+			}
+		}
+	}
 }

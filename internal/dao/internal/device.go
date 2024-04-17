@@ -21,12 +21,12 @@ type DeviceDao struct {
 // DeviceColumns defines and stores column names for table device.
 type DeviceColumns struct {
 	Id              string //
-	PlatForm        string // 平台名称
-	DeviceName      string // 设备名称
+	PlatForm        string // å¹³å°åç§°
+	DeviceName      string // è®¾å¤‡åç§°
 	MqttParameterId string //
-	State           string // 状态，如果未启动为0，如果启动为1
-	ProductId       string // 产品id
-	UserId          string // 用户id
+	State           string // çŠ¶æ€ï¼Œå¦‚æžœæœªå¯åŠ¨ä¸º0ï¼Œå¦‚æžœå¯åŠ¨ä¸º1
+	ProductId       string // äº§å“id
+	UserId          string // ç”¨æˆ·id
 }
 
 // deviceColumns holds the columns for table device.

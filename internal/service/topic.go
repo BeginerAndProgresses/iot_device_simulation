@@ -18,6 +18,10 @@ type ITopic interface {
 	Update(ctx context.Context, topic do.Topic) (id int, err error)
 	// Delete 删除一个topic
 	Delete(ctx context.Context, id int) (err error)
+	// GetAllUpTopics 获取所有上传topic
+	GetAllUpTopics(ctx context.Context, userId int) (topics []entity.Topic, err error)
+	// GetAllDownTopics 获取所有下拉topic
+	GetAllDownTopics(ctx context.Context, userId int) (topics []entity.Topic, err error)
 }
 
 func Topic() ITopic {

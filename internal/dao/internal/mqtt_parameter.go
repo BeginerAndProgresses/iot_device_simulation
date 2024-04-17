@@ -22,10 +22,11 @@ type MqttParameterDao struct {
 type MqttParameterColumns struct {
 	Id            string //
 	ClientId      string // Client ID
-	Port          string // 端口号
-	ServerAddress string // 服务器地址
+	Port          string // ç«¯å£å·
+	ServerAddress string // æœåŠ¡å™¨åœ°å€
 	Username      string // username
 	Password      string // password
+	UserId        string // ç”¨æˆ·id
 }
 
 // mqttParameterColumns holds the columns for table mqtt_parameter.
@@ -36,6 +37,7 @@ var mqttParameterColumns = MqttParameterColumns{
 	ServerAddress: "server_address",
 	Username:      "username",
 	Password:      "password",
+	UserId:        "user_id",
 }
 
 // NewMqttParameterDao creates and returns a new DAO object for table data access.

@@ -9,6 +9,6 @@ type User struct {
 	Id       int    `json:"id"       ` //
 	Username string `json:"username" ` //
 	Password string `json:"password" ` //
-	Nikename string `json:"nikename" ` // 昵称
-	Avatar   string `json:"avatar"   ` // 头像链接
+	Nikename string `json:"nikename" ` // æ˜µç§°
+	Avatar   string `json:"avatar"   ` // å¤´åƒé“¾æŽ¥
 }

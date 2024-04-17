@@ -14,6 +14,7 @@ type SubscribeInfo struct {
 	Id       interface{} //
 	SubName  interface{} //
 	Topic    interface{} //
-	Info     interface{} // 返回的信息
+	Info     interface{} // è¿”å›žçš„ä¿¡æ¯
 	DeviceId interface{} //
+	UserId   interface{} // ç”¨æˆ·id
 }

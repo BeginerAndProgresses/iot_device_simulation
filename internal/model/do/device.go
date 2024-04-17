@@ -12,10 +12,10 @@ import (
 type Device struct {
 	g.Meta          `orm:"table:device, do:true"`
 	Id              interface{} //
-	PlatForm        interface{} // 平台名称
-	DeviceName      interface{} // 设备名称
+	PlatForm        interface{} // å¹³å°åç§°
+	DeviceName      interface{} // è®¾å¤‡åç§°
 	MqttParameterId interface{} //
-	State           interface{} // 状态，如果未启动为0，如果启动为1
-	ProductId       interface{} // 产品id
-	UserId          interface{} // 用户id
+	State           interface{} // çŠ¶æ€ï¼Œå¦‚æžœæœªå¯åŠ¨ä¸º0ï¼Œå¦‚æžœå¯åŠ¨ä¸º1
+	ProductId       interface{} // äº§å“id
+	UserId          interface{} // ç”¨æˆ·id
 }

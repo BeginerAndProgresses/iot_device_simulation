@@ -21,9 +21,11 @@ type TopicDao struct {
 // TopicColumns defines and stores column names for table topic.
 type TopicColumns struct {
 	Id               string // id
-	PlatForm         string // 平台名
-	Topic            string // 通信topic
-	FunctionDescribe string // 功能描述
+	PlatForm         string // å¹³å°å
+	Topic            string // é€šä¿¡topic
+	FunctionDescribe string // åŠŸèƒ½æè¿°
+	UserId           string // ç”¨æˆ·id
+	TType            string // 订阅为1，上报为0
 }
 
 // topicColumns holds the columns for table topic.
@@ -32,6 +34,8 @@ var topicColumns = TopicColumns{
 	PlatForm:         "plat_form",
 	Topic:            "topic",
 	FunctionDescribe: "function_describe",
+	UserId:           "user_id",
+	TType:            "t_type",
 }
 
 // NewTopicDao creates and returns a new DAO object for table data access.

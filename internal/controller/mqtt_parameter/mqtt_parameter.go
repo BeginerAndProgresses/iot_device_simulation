@@ -22,6 +22,7 @@ func (c *cMqtt) Add(ctx context.Context, req *mqtt_parameter.AddReq) (res *mqtt_
 		ServerAddress: req.ServerAddress,
 		Username:      req.Username,
 		Password:      req.Password,
+		UserId:        req.UserId,
 	})
 	res = &mqtt_parameter.AddRes{Id: id}
 	return
@@ -36,6 +37,7 @@ func (c *cMqtt) Edit(ctx context.Context, req *mqtt_parameter.EditReq) (res *mqt
 		ServerAddress: req.ServerAddress,
 		Username:      req.Username,
 		Password:      req.Password,
+		UserId:        req.UserId,
 	})
 	res = &mqtt_parameter.EditRes{Id: id}
 	return

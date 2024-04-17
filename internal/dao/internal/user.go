@@ -23,8 +23,8 @@ type UserColumns struct {
 	Id       string //
 	Username string //
 	Password string //
-	Nikename string // 昵称
-	Avatar   string // 头像链接
+	Nikename string // æ˜µç§°
+	Avatar   string // å¤´åƒé“¾æŽ¥
 }
 
 // userColumns holds the columns for table user.

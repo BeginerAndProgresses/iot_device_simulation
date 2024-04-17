@@ -27,7 +27,8 @@ func (i *iTopic) Get(ctx context.Context, id int) (topic entity.Topic, err error
 
 // Insert 插入一个设备
 func (i *iTopic) Insert(ctx context.Context, topic do.Topic) (id int, err error) {
-	result, err := dao.Topic.Ctx(ctx).Data(topic).Insert()
+	result, err := dao.Topic.Ctx(ctx).Data(&topic).Insert()
+
 	insertId, err := result.LastInsertId()
 	id = int(insertId)
 	return
@@ -44,5 +45,15 @@ func (i *iTopic) Update(ctx context.Context, topic do.Topic) (id int, err error)
 // Delete 删除一个设备
 func (i *iTopic) Delete(ctx context.Context, id int) (err error) {
 	_, err = dao.Topic.Ctx(ctx).Where("id", id).Delete()
+	return
+}
+
+func (i *iTopic) GetAllUpTopics(ctx context.Context, userId int) (topics []entity.Topic, err error) {
+	err = dao.Topic.Ctx(ctx).Where("user_id", userId).Where(dao.Topic.Columns().TType, 1).Scan(&topics)
+	return
+}
+
+func (i *iTopic) GetAllDownTopics(ctx context.Context, userId int) (topics []entity.Topic, err error) {
+	err = dao.Topic.Ctx(ctx).Where("user_id", userId).Where(dao.Topic.Columns().TType, 0).Scan(&topics)
 	return
 }

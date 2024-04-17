@@ -20,7 +20,7 @@ type iMqtt struct {
 }
 
 func (i *iMqtt) Insert(ctx context.Context, deviceId int, parameter do.MqttParameter) (id int, err error) {
-	result, err := dao.MqttParameter.Ctx(ctx).Data(parameter).Insert()
+	result, err := dao.MqttParameter.Ctx(ctx).Data(&parameter).Insert()
 	insertId, err := result.LastInsertId()
 	id = int(insertId)
 	_, err = dao.Device.Ctx(ctx).Where("id", deviceId).Data(do.Device{Id: deviceId, MqttParameterId: id}).OmitEmptyData().Update()

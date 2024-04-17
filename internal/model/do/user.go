@@ -14,6 +14,6 @@ type User struct {
 	Id       interface{} //
 	Username interface{} //
 	Password interface{} //
-	Nikename interface{} // 昵称
-	Avatar   interface{} // 头像链接
+	Nikename interface{} // æ˜µç§°
+	Avatar   interface{} // å¤´åƒé“¾æŽ¥
 }

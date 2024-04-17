@@ -23,8 +23,9 @@ type SubscribeInfoColumns struct {
 	Id       string //
 	SubName  string //
 	Topic    string //
-	Info     string // 返回的信息
+	Info     string // è¿”å›žçš„ä¿¡æ¯
 	DeviceId string //
+	UserId   string // ç”¨æˆ·id
 }
 
 // subscribeInfoColumns holds the columns for table subscribe_info.
@@ -34,6 +35,7 @@ var subscribeInfoColumns = SubscribeInfoColumns{
 	Topic:    "topic",
 	Info:     "info",
 	DeviceId: "device_id",
+	UserId:   "user_id",
 }
 
 // NewSubscribeInfoDao creates and returns a new DAO object for table data access.

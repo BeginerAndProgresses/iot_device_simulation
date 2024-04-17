@@ -23,9 +23,17 @@ type IDevice interface {
 	// DisConnMqtt 设备下线
 	DisConnMqtt(ctx context.Context, deviceId int) (id, state int, err error)
 	// InfoPost 信息上报
-	InfoPost(ctx context.Context, deviceId, topicId int, json string) (err error)
+	InfoPost(ctx context.Context, userId, deviceId, topicId int, json string) (err error)
 	// TopicSub 订阅topic
 	TopicSub(ctx context.Context, deviceId, topicId int) (err error)
+	// AddSubTopic 添加订阅topic
+	AddSubTopic(ctx context.Context, subTopic do.SubTopic) error
+	// GetByUID 获取用户设备
+	GetByUID(ctx context.Context, userid int) (TencentDevice, HuaweiDevice, AliyunDevice []entity.Device, err error)
+	// GetChatDataInfo 获取图表数据
+	GetChatDataInfo(ctx context.Context, userid int, days int) (times []string, lineData, barOnlineData, barOffOnlineData []int, err error)
+	// GetSubTopic 获取设备订阅的topic
+	GetSubTopic(ctx context.Context, deviceId int) (topics []entity.SubTopic, err error)
 }
 
 var localDevice IDevice

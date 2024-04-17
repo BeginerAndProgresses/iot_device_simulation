@@ -13,6 +13,7 @@ type AddReq struct {
 	ServerAddress string `p:"server_address" v:"required#服务器地址不能为空" dc:"服务器地址"`
 	Username      string `p:"username" v:"required#用户名不能为空" dc:"用户名"`
 	Password      string `p:"password" v:"required#密码不能为空" dc:"密码"`
+	UserId        int    `p:"user_id" v:"required|integer#user_id不能为空|user_id应为整数" dc:"user_id"`
 }
 
 type AddRes struct {
@@ -27,6 +28,7 @@ type EditReq struct {
 	ServerAddress string `p:"server_address"  dc:"服务器地址"`
 	Username      string `p:"username" dc:"用户名"`
 	Password      string `p:"password" dc:"密码"`
+	UserId        int    `p:"user_id" v:"required|integer#user_id不能为空|user_id应为整数" dc:"user_id"`
 }
 
 type EditRes struct {

@@ -7,7 +7,9 @@ package entity
 // Topic is the golang structure for table topic.
 type Topic struct {
 	Id               int    `json:"id"                ` // id
-	PlatForm         string `json:"plat_form"         ` // 平台名
-	Topic            string `json:"topic"             ` // 通信topic
-	FunctionDescribe string `json:"function_describe" ` // 功能描述
+	PlatForm         string `json:"plat_form"         ` // å¹³å°å
+	Topic            string `json:"topic"             ` // é€šä¿¡topic
+	FunctionDescribe string `json:"function_describe" ` // åŠŸèƒ½æè¿°
+	UserId           int    `json:"user_id"           ` // ç”¨æˆ·id
+	TType            uint   `json:"t_type"            ` // 订阅为1，上报为0
 }

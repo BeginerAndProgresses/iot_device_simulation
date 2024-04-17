@@ -8,8 +8,9 @@ package entity
 type MqttParameter struct {
 	Id            int    `json:"id"             ` //
 	ClientId      string `json:"client_id"      ` // Client ID
-	Port          int    `json:"port"           ` // 端口号
-	ServerAddress string `json:"server_address" ` // 服务器地址
+	Port          int    `json:"port"           ` // ç«¯å£å·
+	ServerAddress string `json:"server_address" ` // æœåŠ¡å™¨åœ°å€
 	Username      string `json:"username"       ` // username
 	Password      string `json:"password"       ` // password
+	UserId        int    `json:"user_id"        ` // ç”¨æˆ·id
 }

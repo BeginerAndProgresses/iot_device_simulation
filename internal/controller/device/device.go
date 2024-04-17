@@ -82,7 +82,7 @@ func (c *cDev) DisConn(ctx context.Context, req *device.DisConnReq) (res *device
 
 // TopicPost 上传属性
 func (c *cDev) TopicPost(ctx context.Context, req *device.PubReq) (res *device.PubRes, err error) {
-	err = service.Device().InfoPost(ctx, req.DeviceId, req.TopicId, req.JsonInfo)
+	err = service.Device().InfoPost(ctx, req.UserId, req.DeviceId, req.TopicId, req.JsonInfo)
 	res = &device.PubRes{}
 	if err != nil {
 		res.Code = 0
@@ -106,5 +106,51 @@ func (c *cDev) TopicSub(ctx context.Context, req *device.SubReq) (res *device.Su
 
 // TopicSubInfo topic订阅返回信息获取
 func (c *cDev) TopicSubInfo(ctx context.Context, req *device.SubInfoReq) (res *device.SubInfoRes, err error) {
+	return
+}
+
+// ChatDataInfo 获取图表数据
+func (c *cDev) ChatDataInfo(ctx context.Context, req *device.ChatInfoReq) (res *device.ChatInfoRes, err error) {
+	times, data, onlineData, offOnlineData, err := service.Device().GetChatDataInfo(ctx, req.UserId, req.Days)
+	if err != nil {
+		return
+	}
+	res = &device.ChatInfoRes{
+		LineChatSeriesData: data,
+		BarChatOnline:      onlineData,
+		BarChatOffline:     offOnlineData,
+		LineChatXData:      times,
+		Code:               1,
+	}
+	return
+}
+
+// SearchByUid 根据用户id查询设备
+func (c *cDev) SearchByUid(ctx context.Context, req *device.SearchByUidReq) (res *device.SearchByUidRes, err error) {
+	tencentDevice, huaweiDevice, aliyunDevice, err := service.Device().GetByUID(ctx, req.UserId)
+	res = &device.SearchByUidRes{
+		TencentDevice: tencentDevice,
+		HuaweiDevice:  huaweiDevice,
+		AliDevice:     aliyunDevice,
+		Code:          1,
+	}
+	if err != nil {
+		res.Code = 0
+		return
+	}
+	return
+}
+
+// SearchSubTopic 查询设备订阅的topic
+func (c *cDev) SearchSubTopic(ctx context.Context, req *device.SearchSubTopicReq) (res *device.SearchSubTopicRes, err error) {
+	subTopics, err := service.Device().GetSubTopic(ctx, req.DeviceId)
+	res = &device.SearchSubTopicRes{
+		SubTopic: subTopics,
+		Code:     1,
+	}
+	if err != nil {
+		res.Code = 0
+		return
+	}
 	return
 }

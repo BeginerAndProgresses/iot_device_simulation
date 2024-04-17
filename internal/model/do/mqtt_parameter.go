@@ -13,8 +13,9 @@ type MqttParameter struct {
 	g.Meta        `orm:"table:mqtt_parameter, do:true"`
 	Id            interface{} //
 	ClientId      interface{} // Client ID
-	Port          interface{} // 端口号
-	ServerAddress interface{} // 服务器地址
+	Port          interface{} // ç«¯å£å·
+	ServerAddress interface{} // æœåŠ¡å™¨åœ°å€
 	Username      interface{} // username
 	Password      interface{} // password
+	UserId        interface{} // ç”¨æˆ·id
 }

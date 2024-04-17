@@ -20,16 +20,20 @@ type PublishInfoDao struct {
 
 // PublishInfoColumns defines and stores column names for table publish_info.
 type PublishInfoColumns struct {
-	Id    string // id
-	Json  string // 信息json
-	Topic string // 通信topic
+	Id      string // id
+	Json    string // ä¸Šä¼ ä¿¡æ¯
+	Topic   string // é€šä¿¡topic
+	PubDate string // ä¸Šä¼ æ—¶é—´
+	UserId  string // ç”¨æˆ·id
 }
 
 // publishInfoColumns holds the columns for table publish_info.
 var publishInfoColumns = PublishInfoColumns{
-	Id:    "id",
-	Json:  "json",
-	Topic: "topic",
+	Id:      "id",
+	Json:    "json",
+	Topic:   "topic",
+	PubDate: "pub_date",
+	UserId:  "user_id",
 }
 
 // NewPublishInfoDao creates and returns a new DAO object for table data access.

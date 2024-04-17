@@ -27,17 +27,6 @@ type SearchRes struct {
 	Device entity.Device `json:"device" dc:"设备"`
 }
 
-type SearchByPlatformReq struct {
-	g.Meta   `path:"/search_by_platform" method:"get"`
-	Platform string `p:"platform" v:"required#平台名不能为空" dc:"平台"`
-	UserId   int    `p:"userid" v:"required|integer|min:1#id不能为空|id只能是整数|最小值不应小于1" dc:"用户id不能为空"`
-}
-
-type SearchByPlatformRes struct {
-	Code    int             `json:"code" dc:"是否有返回值"`
-	Devices []entity.Device `json:"devices" dc:"设备列表"`
-}
-
 type DelReq struct {
 	g.Meta `path:"/" method:"delete"`
 	Id     int `p:"id" v:"required|integer|min:1#id不能为空|id只能是整数|最小值不应小于1" dc:"ID"`
@@ -58,6 +47,29 @@ type EditReq struct {
 
 type EditRes struct {
 	Id int `json:"id" dc:"设备id"`
+}
+
+type SearchByUidReq struct {
+	g.Meta `path:"/search_by_uid" method:"get"`
+	UserId int `p:"user_id" v:"required|integer|min:1#user_id不能为空|id只能是整数|最小值不应小于1" dc:"用户id"`
+}
+
+type SearchByUidRes struct {
+	Code          int             `json:"code" dc:"是否有返回值"`
+	TencentDevice []entity.Device `json:"tencent_device" dc:"腾讯云设备"`
+	AliDevice     []entity.Device `json:"ali_device" dc:"阿里云设备"`
+	HuaweiDevice  []entity.Device `json:"huawei_device" dc:"华为云设备"`
+}
+
+type SearchByPlatformReq struct {
+	g.Meta   `path:"/search_by_platform" method:"get"`
+	Platform string `p:"platform" v:"required#平台名不能为空" dc:"平台"`
+	UserId   int    `p:"userid" v:"required|integer|min:1#id不能为空|id只能是整数|最小值不应小于1" dc:"用户id不能为空"`
+}
+
+type SearchByPlatformRes struct {
+	Code    int             `json:"code" dc:"是否有返回值"`
+	Devices []entity.Device `json:"devices" dc:"设备列表"`
 }
 
 type ConnReq struct {
@@ -83,6 +95,7 @@ type DisConnRes struct {
 // PubReq 信息上传
 type PubReq struct {
 	g.Meta   `path:"/publish" method:"post"`
+	UserId   int    `p:"id" v:"required|integer|min:1#id不能为空|id只能是整数|最小值不应小于1" dc:"user_id"`
 	TopicId  int    `p:"topic_id" v:"required|integer|min:1#topicid不能为空|id只能是整数|最小值不应小于1" dc:"topic_id"`
 	DeviceId int    `p:"device_id" v:"required|integer|integer|min:1#deviceid不能为空|id只能是整数|最小值不应小于1" dc:"device_id"`
 	JsonInfo string `p:"json_info" v:"required#json不能为空" dc:"json"`
@@ -112,4 +125,30 @@ type SubInfoReq struct {
 
 type SubInfoRes struct {
 	Info string `json:"info" dc:"信息"`
+}
+
+type ChatInfoReq struct {
+	g.Meta `path:"/chat_info" method:"get"`
+	UserId int `p:"user_id" v:"required|integer|min:1#userid不能为空|id只能是整数|最小值不应小于1" dc:"user_id"`
+	// 传多少天返回多少天数据
+	Days int `p:"days" v:"required|integer|min:1#days不能为空|day只能是整数|最小值不应小于1" dc:"days"`
+}
+
+type ChatInfoRes struct {
+	Code               int      `json:"code" dc:"是否有返回值"`
+	LineChatXData      []string `json:"lineChatXData" dc:"线性表展示"`
+	LineChatSeriesData []int    `json:"lineChatSeriesData" dc:"线性表数据"`
+	BarChatOnline      []int    `json:"barChatOnline" dc:"柱状图在线数据"`
+	BarChatOffline     []int    `json:"barChatOffline" dc:"柱状图离线数据"`
+}
+
+type SearchSubTopicReq struct {
+	g.Meta   `path:"/get_sub_topic" method:"get"`
+	UserId   int `p:"user_id" v:"required|integer|min:1#userid不能为空|id只能是整数|最小值不应小于1" dc:"user_id"`
+	DeviceId int `p:"device_id" v:"required|integer|integer|min:1#deviceid不能为空|id只能是整数|最小值不应小于1" dc:"device_id"`
+}
+
+type SearchSubTopicRes struct {
+	Code     int               `json:"code" dc:"是否有返回值"`
+	SubTopic []entity.SubTopic `json:"sub_topic" dc:"订阅的主题"`
 }
