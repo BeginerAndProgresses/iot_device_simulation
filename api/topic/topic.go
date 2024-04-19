@@ -68,3 +68,25 @@ type SearchAllDownTopicRes struct {
 	Code  int            `json:"code" dc:"是否有返回值"`
 	Topic []entity.Topic `json:"topic" dc:"主题"`
 }
+
+type SearchAllUpTopicByDeviceIdReq struct {
+	g.Meta   `path:"/get_all_up_by_device_topic" method:"get"`
+	UserId   int `p:"user_id" v:"required|integer|min:1#userid不能为空|id只能是整数|最小值不应小于1" dc:"user_id"`
+	DeviceId int `p:"device_id" v:"required|integer|min:1#deviceid不能为空|id只能是整数|最小值不应小于1" dc:"device_id"`
+}
+
+type SearchAllUpTopicByDeviceIdRes struct {
+	Code  int            `json:"code" dc:"是否有返回值"`
+	Topic []entity.Topic `json:"topic" dc:"主题"`
+}
+
+type SearchAllDownTopicByDeviceIdReq struct {
+	g.Meta   `path:"/get_all_down_by_device_topic" method:"get"`
+	UserId   int `p:"user_id" v:"required|integer|min:1#userid不能为空|id只能是整数|最小值不应小于1" dc:"user_id"`
+	DeviceId int `p:"device_id" v:"required|integer|min:1#deviceid不能为空|id只能是整数|最小值不应小于1" dc:"device_id"`
+}
+
+type SearchAllDownTopicByDeviceIdRes struct {
+	Code  int            `json:"code" dc:"是否有返回值"`
+	Topic []entity.Topic `json:"topic" dc:"主题"`
+}

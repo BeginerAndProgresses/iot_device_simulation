@@ -59,3 +59,21 @@ func (i *iTopic) GetAllDownTopics(ctx context.Context, userId int) (topics []ent
 	err = dao.Topic.Ctx(ctx).Where("user_id", userId).Where(dao.Topic.Columns().TType, 0).Scan(&topics)
 	return
 }
+
+func (i *iTopic) GetAllUpByDeviceIdTopics(ctx context.Context, userId, deviceId int) (topics []entity.Topic, err error) {
+	device, err := service.Device().Get(ctx, deviceId)
+	if err != nil {
+		return []entity.Topic{}, err
+	}
+	err = dao.Topic.Ctx(ctx).Where("user_id", userId).Where(dao.Topic.Columns().PlatForm, device.PlatForm).Where(dao.Topic.Columns().TType, 0).Scan(&topics)
+	return
+}
+
+func (i *iTopic) GetAllDownByDeviceIdTopics(ctx context.Context, userId, deviceId int) (topics []entity.Topic, err error) {
+	device, err := service.Device().Get(ctx, deviceId)
+	if err != nil {
+		return []entity.Topic{}, err
+	}
+	err = dao.Topic.Ctx(ctx).Where("user_id", userId).Where(dao.Topic.Columns().PlatForm, device.PlatForm).Where(dao.Topic.Columns().TType, 1).Scan(&topics)
+	return
+}

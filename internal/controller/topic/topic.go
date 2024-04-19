@@ -80,3 +80,27 @@ func (c *cTopic) SearchAllDownTopics(ctx context.Context, req *topic.SearchAllDo
 	res.Topic = get
 	return
 }
+
+func (c *cTopic) SearchAllUpByDeviceIdTopics(ctx context.Context, req *topic.SearchAllUpTopicByDeviceIdReq) (res *topic.SearchAllUpTopicByDeviceIdRes, err error) {
+	get, err := service.Topic().GetAllUpByDeviceIdTopics(ctx, req.UserId, req.DeviceId)
+	res = &topic.SearchAllUpTopicByDeviceIdRes{}
+	if err != nil {
+		res.Code = 0
+	} else {
+		res.Code = 1
+	}
+	res.Topic = get
+	return
+}
+
+func (c *cTopic) SearchAllDownByDeviceIdTopics(ctx context.Context, req *topic.SearchAllDownTopicByDeviceIdReq) (res *topic.SearchAllDownTopicByDeviceIdRes, err error) {
+	get, err := service.Topic().GetAllDownByDeviceIdTopics(ctx, req.UserId, req.DeviceId)
+	res = &topic.SearchAllDownTopicByDeviceIdRes{}
+	if err != nil {
+		res.Code = 0
+	} else {
+		res.Code = 1
+	}
+	res.Topic = get
+	return
+}

@@ -22,6 +22,10 @@ type ITopic interface {
 	GetAllUpTopics(ctx context.Context, userId int) (topics []entity.Topic, err error)
 	// GetAllDownTopics 获取所有下拉topic
 	GetAllDownTopics(ctx context.Context, userId int) (topics []entity.Topic, err error)
+	// GetAllUpByDeviceIdTopics 根据设备id获取平台所有上传topic
+	GetAllUpByDeviceIdTopics(ctx context.Context, userId, deviceId int) (topics []entity.Topic, err error)
+	// GetAllDownByDeviceIdTopics 根据设备id获取平台所有下拉topic
+	GetAllDownByDeviceIdTopics(ctx context.Context, userId, deviceId int) (topics []entity.Topic, err error)
 }
 
 func Topic() ITopic {
