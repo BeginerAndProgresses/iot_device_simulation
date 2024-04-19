@@ -115,7 +115,7 @@ func (cm *ClientManager) ping(ctx context.Context) {
 	// 清理超时链接
 	_, err = gcron.Add(ctx, "0 */1 * * * *", func(ctx context.Context) {
 		cm.clearTimeOutClient()
-	})
+	}, "websocket_clear_client")
 	if err != nil {
 		fmt.Println("websocket client clear err:", err)
 	}

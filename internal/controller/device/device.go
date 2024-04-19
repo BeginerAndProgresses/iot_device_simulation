@@ -20,6 +20,7 @@ func (c *cDev) Add(ctx context.Context, req *device.AddReq) (res *device.AddRes,
 		PlatForm:   req.Platform,
 		ProductId:  req.ProductId,
 		UserId:     req.UserId,
+		State:      0,
 	})
 	res = &device.AddRes{Id: id}
 	return

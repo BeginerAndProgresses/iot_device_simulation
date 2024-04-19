@@ -43,10 +43,9 @@ var (
 
 			})
 			s.Group("/ws", func(group *ghttp.RouterGroup) {
-				group.Middleware(ghttp.MiddlewareHandlerResponse)
-				group.Bind()
-				//注册路由
-				group.ALL("/socket", websocket.WebSocketHandler)
+				//group.Middleware(ghttp.MiddlewareHandlerResponse)
+				//group.Bind(wscontroller.WebSocketController)
+				group.ALL("/socket", websocket.WSHandler)
 			})
 			s.Run()
 			return nil

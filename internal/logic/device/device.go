@@ -5,13 +5,16 @@ import (
 	"context"
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/gogf/gf/v2/frame/g"
 	"iot_device_simulation/internal/dao"
 	"iot_device_simulation/internal/model/do"
 	"iot_device_simulation/internal/model/entity"
 	"iot_device_simulation/internal/packed/conn"
 	"iot_device_simulation/internal/packed/util"
+	"iot_device_simulation/internal/packed/websocket"
 	"iot_device_simulation/internal/service"
 	"strconv"
+	"sync"
 	"time"
 )
 
@@ -100,7 +103,7 @@ func (i *iDevice) ConnMqtt(ctx context.Context, deviceId int) (id, state int, er
 	//err = conn.Conn(deviceId, &t_mqtt)
 	// 并发进行
 	go func() {
-		err = conn.ConcConn(deviceId, &t_mqtt)
+		err = conn.ConcConn(t_dev, &t_mqtt)
 	}()
 	if err != nil {
 		id = 0
@@ -215,24 +218,30 @@ func (i *iDevice) TopicSub(ctx context.Context, deviceId, topicId int) (err erro
 
 	//_, err = dao.PublishInfo.Ctx(ctx).Data(do.PublishInfo{Topic: topic}).Insert()
 	//id, err := result.LastInsertId()
-	fmt.Printf("topic", topic)
+	//fmt.Printf("topic", topic)
+	var wg sync.WaitGroup
+	wg.Add(1)
 	go func() {
-		err = conn.ConnSubscribe(deviceId, topic, getSubInfo)
+		err = conn.ConnSubscribe(deviceId, topicId, topic, getSubInfo)
 		if err != nil {
 			fmt.Println("进行订阅失败", err)
 		}
-		err = i.AddSubTopic(ctx, do.SubTopic{DeviceId: deviceId,
-			TopicId: topicId, State: 1, SubTopic: topic,
-			Url: "/" + strconv.Itoa(deviceId) + "/" + strconv.Itoa(topicId)})
-		if err != nil {
-			fmt.Println("添加订阅失败", err)
-		}
+
+		wg.Done()
 	}()
+
+	wg.Wait()
+	err = i.AddSubTopic(ctx, do.SubTopic{DeviceId: deviceId,
+		TopicId: topicId, State: 1, SubTopic: topic,
+		WsParam: getWsKey(deviceId, topicId)})
+	if err != nil {
+		fmt.Println("添加订阅失败", err)
+	}
 	return
 }
 
 func (i *iDevice) AddSubTopic(ctx context.Context, subTopic do.SubTopic) error {
-	_, err := dao.SubTopic.Ctx(ctx).Data(subTopic).Insert()
+	_, err := dao.SubTopic.Ctx(ctx).Data(&subTopic).Insert()
 	return err
 }
 
@@ -304,16 +313,28 @@ func (i *iDevice) GetSubTopic(ctx context.Context, deviceId int) (topics []entit
 func getTimes(days int) []string {
 	t := time.Now()
 	times := make([]string, 0, days)
-	for i := 0; i < days; i++ {
+	for i := days - 1; i >= 0; i-- {
 		times = append(times, t.AddDate(0, 0, -i).Format("2006-01-02"))
 	}
 	return times
 }
 
-func getSubInfo(device_id int, topic string) func(mqtt.Client, mqtt.Message) {
+func getSubInfo(deviceId, topicId int, topic string) func(mqtt.Client, mqtt.Message) {
 	return func(client mqtt.Client, msg mqtt.Message) {
-		insertSubInfo(entity.SubscribeInfo{DeviceId: device_id, Topic: topic, SubName: topic, Info: string(msg.Payload())})
+		insertSubInfo(entity.SubscribeInfo{DeviceId: deviceId, Topic: topic, SubName: topic, Info: string(msg.Payload())})
+		response := &websocket.WResponse{
+			Event: "sub_info",
+			Data: g.Map{
+				"topic": topic,
+				"msg":   msg.Payload(),
+			},
+		}
+		websocket.CM.SendToClient(getWsKey(deviceId, topicId), response)
 	}
+}
+
+func getWsKey(deviceId, topicId int) string {
+	return strconv.Itoa(deviceId) + "-" + strconv.Itoa(topicId)
 }
 
 func insertSubInfo(info entity.SubscribeInfo) {

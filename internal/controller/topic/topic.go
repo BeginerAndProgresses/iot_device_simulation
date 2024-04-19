@@ -18,6 +18,7 @@ func (c *cTopic) Add(ctx context.Context, req *topic.AddReq) (res *topic.AddRes,
 		PlatForm:         req.PlatForm,
 		Topic:            req.Topic,
 		FunctionDescribe: req.FunctionDescribe,
+		TType:            req.TType,
 	})
 	res = &topic.AddRes{Id: id}
 	return

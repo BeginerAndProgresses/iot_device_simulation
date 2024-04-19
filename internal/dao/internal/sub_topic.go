@@ -24,7 +24,7 @@ type SubTopicColumns struct {
 	SubTopic string // 订阅通信topic
 	DeviceId string // 设备id
 	State    string // 状态，0关闭，1开启
-	Url      string // 开启ws通信的路径，以device_id和topic_id拼成
+	WsParam  string // 开启ws的参数
 	TopicId  string // 通信id
 }
 
@@ -34,7 +34,7 @@ var subTopicColumns = SubTopicColumns{
 	SubTopic: "sub_topic",
 	DeviceId: "device_id",
 	State:    "state",
-	Url:      "url",
+	WsParam:  "ws_param",
 	TopicId:  "topic_id",
 }
 

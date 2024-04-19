@@ -2,7 +2,6 @@ package websocket
 
 import (
 	"fmt"
-	"github.com/gogf/gf/v2/util/guid"
 	"github.com/gorilla/websocket"
 	"runtime/debug"
 )
@@ -21,10 +20,10 @@ type Client struct {
 	HeartbeatTime uint64 // 用户上次心跳时间
 }
 
-func NewClient(addr string, socket *websocket.Conn, firstTime uint64) *Client {
+func NewClient(addr string, socket *websocket.Conn, firstTime uint64, id string) *Client {
 	return &Client{
 		Addr:          addr,
-		ID:            guid.S(),
+		ID:            id,
 		Socket:        socket,
 		Send:          make(chan *WResponse, 1000),
 		SendClosed:    false,
@@ -48,7 +47,7 @@ func (c *Client) read() {
 			return
 		}
 		//	处理信息函数
-		fmt.Println("read", string(msg))
+		fmt.Println("read", c.ID, string(msg))
 		ProcessData(c, msg)
 	}
 }
@@ -61,7 +60,7 @@ func (c *Client) write() {
 	}()
 	defer func() {
 		//	关闭管道
-		//clientManager.Unregister <- c
+		CM.Unregister <- c
 		_ = c.Socket.Close()
 	}()
 	for {

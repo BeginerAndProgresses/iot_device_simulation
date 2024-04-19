@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/eclipse/paho.mqtt.golang v1.4.3
 	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.6.3
-	github.com/gogf/gf/v2 v2.6.3
+	github.com/gogf/gf/v2 v2.7.0
 )
 
 require (

@@ -2,7 +2,7 @@ package websocket
 
 import "github.com/gogf/gf/v2/frame/g"
 
-type request struct {
+type Request struct {
 	Event string `json:"event"` //事件名称
 	Data  g.Map  `json:"data"`  //数据
 }

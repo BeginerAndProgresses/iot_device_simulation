@@ -11,6 +11,7 @@ type AddReq struct {
 	Topic            string `p:"topic" v:"required#topic不能为空" dc:"topic"`           // 通信topic
 	FunctionDescribe string `p:"function_describe" v:"required#功能描述不能为空" dc:"功能描述"` // 功能描述
 	UserId           int    `p:"user_id" v:"required|integer|min:1#user_id不能为空|user_id只能是整数|最小值不应小于1" dc:"user_id"`
+	TType            int    `p:"t_type" v:"required#topic类型不能为空" dc:"topic类型"`
 }
 
 type AddRes struct {

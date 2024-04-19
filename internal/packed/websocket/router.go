@@ -12,6 +12,7 @@ const (
 	Quit  = "quit"
 	IsApp = "is_app"
 	Ping  = "ping"
+	Text  = "text"
 )
 
 func ProcessData(client *Client, message []byte) {
@@ -20,7 +21,7 @@ func ProcessData(client *Client, message []byte) {
 			fmt.Println("处理数据 stop", r)
 		}
 	}()
-	request := &request{}
+	request := &Request{}
 	err := gconv.Struct(message, request)
 	if err != nil {
 		fmt.Println("数据解析失败：", err)
@@ -29,6 +30,5 @@ func ProcessData(client *Client, message []byte) {
 	switch request.Event {
 	case Ping:
 		PingController(client)
-		break
 	}
 }

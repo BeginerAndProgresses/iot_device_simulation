@@ -95,7 +95,7 @@ type DisConnRes struct {
 // PubReq 信息上传
 type PubReq struct {
 	g.Meta   `path:"/publish" method:"post"`
-	UserId   int    `p:"id" v:"required|integer|min:1#id不能为空|id只能是整数|最小值不应小于1" dc:"user_id"`
+	UserId   int    `p:"user_id" v:"required|integer|min:1#id不能为空|id只能是整数|最小值不应小于1" dc:"user_id"`
 	TopicId  int    `p:"topic_id" v:"required|integer|min:1#topicid不能为空|id只能是整数|最小值不应小于1" dc:"topic_id"`
 	DeviceId int    `p:"device_id" v:"required|integer|integer|min:1#deviceid不能为空|id只能是整数|最小值不应小于1" dc:"device_id"`
 	JsonInfo string `p:"json_info" v:"required#json不能为空" dc:"json"`
@@ -144,7 +144,6 @@ type ChatInfoRes struct {
 
 type SearchSubTopicReq struct {
 	g.Meta   `path:"/get_sub_topic" method:"get"`
-	UserId   int `p:"user_id" v:"required|integer|min:1#userid不能为空|id只能是整数|最小值不应小于1" dc:"user_id"`
 	DeviceId int `p:"device_id" v:"required|integer|integer|min:1#deviceid不能为空|id只能是整数|最小值不应小于1" dc:"device_id"`
 }
 

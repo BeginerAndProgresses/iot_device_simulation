@@ -15,6 +15,6 @@ type SubTopic struct {
 	SubTopic interface{} // 订阅通信topic
 	DeviceId interface{} // 设备id
 	State    interface{} // 状态，0关闭，1开启
-	Url      interface{} // 开启ws通信的路径，以device_id和topic_id拼成
+	WsParam  interface{} // 开启ws的参数
 	TopicId  interface{} // 通信id
 }

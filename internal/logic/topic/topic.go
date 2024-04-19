@@ -27,8 +27,10 @@ func (i *iTopic) Get(ctx context.Context, id int) (topic entity.Topic, err error
 
 // Insert 插入一个设备
 func (i *iTopic) Insert(ctx context.Context, topic do.Topic) (id int, err error) {
-	result, err := dao.Topic.Ctx(ctx).Data(&topic).Insert()
-
+	result, err := dao.Topic.Ctx(ctx).Data(topic).Insert()
+	if err != nil {
+		return
+	}
 	insertId, err := result.LastInsertId()
 	id = int(insertId)
 	return
