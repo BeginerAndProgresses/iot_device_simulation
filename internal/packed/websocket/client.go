@@ -89,6 +89,7 @@ func (c *Client) SendMsg(msg *WResponse) {
 
 // updateHeatBeatTime 更新心跳时间
 func (c *Client) updateHeatBeatTime(curTime uint64) {
+	fmt.Println("心跳触发")
 	c.HeartbeatTime = curTime
 }
 

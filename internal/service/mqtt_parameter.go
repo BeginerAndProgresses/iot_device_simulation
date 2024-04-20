@@ -12,6 +12,7 @@ type IMqtt interface {
 	Get(ctx context.Context, id int) (mqtt entity.MqttParameter, err error)
 	Update(ctx context.Context, parameter do.MqttParameter) (id int, err error)
 	Delete(ctx context.Context, id int) (err error)
+	GetByDeviceId(ctx context.Context, deviceId int) (mqtt entity.MqttParameter, err error)
 }
 
 var localMqtt IMqtt

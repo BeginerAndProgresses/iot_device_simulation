@@ -24,7 +24,6 @@ var upGrader = websocket.Upgrader{
 
 // StartWebSocket 启动WebSocket
 func StartWebSocket(ctx context.Context) {
-
 	//g.Log().Info(ctx, "启动：WebSocket")
 	fmt.Println("启动：WebSocket")
 	go CM.start()
@@ -43,5 +42,6 @@ func WSHandler(req *ghttp.Request) {
 	client := NewClient(conn.RemoteAddr().String(), conn, curTime, query.Get("id"))
 	go client.read()
 	go client.write()
+	//fmt.Println("创建client", client)
 	CM.Register <- client
 }

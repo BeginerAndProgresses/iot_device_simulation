@@ -29,7 +29,6 @@ func (c *cMqtt) Add(ctx context.Context, req *mqtt_parameter.AddReq) (res *mqtt_
 }
 
 func (c *cMqtt) Edit(ctx context.Context, req *mqtt_parameter.EditReq) (res *mqtt_parameter.EditRes, err error) {
-	fmt.Println("Editmqtt: ", req)
 	id, err := service.Mqtt().Update(ctx, do.MqttParameter{
 		Id:            req.Id,
 		ClientId:      req.ClientId,
@@ -37,7 +36,6 @@ func (c *cMqtt) Edit(ctx context.Context, req *mqtt_parameter.EditReq) (res *mqt
 		ServerAddress: req.ServerAddress,
 		Username:      req.Username,
 		Password:      req.Password,
-		UserId:        req.UserId,
 	})
 	res = &mqtt_parameter.EditRes{Id: id}
 	return
@@ -65,5 +63,17 @@ func (c *cMqtt) Search(ctx context.Context, req *mqtt_parameter.SearchReq) (res 
 		res.Code = 1
 	}
 	err = util.Transfer(&mqtt, &res.Mqtt)
+	return
+}
+
+func (c *cMqtt) SearchByDeviceId(ctx context.Context, req *mqtt_parameter.SearchByDeviceIdReq) (res *mqtt_parameter.SearchByDeviceIdRes, err error) {
+	mqtt, err := service.Mqtt().GetByDeviceId(ctx, req.DeviceId)
+	res = &mqtt_parameter.SearchByDeviceIdRes{}
+	if err != nil {
+		res.Code = 0
+		return
+	}
+	res.Code = 1
+	res.Mqtt = mqtt
 	return
 }

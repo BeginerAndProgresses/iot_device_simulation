@@ -77,3 +77,43 @@ func (i *iTopic) GetAllDownByDeviceIdTopics(ctx context.Context, userId, deviceI
 	err = dao.Topic.Ctx(ctx).Where("user_id", userId).Where(dao.Topic.Columns().PlatForm, device.PlatForm).Where(dao.Topic.Columns().TType, 1).Scan(&topics)
 	return
 }
+
+func (i *iTopic) GetAll(ctx context.Context, userId int) (topics []entity.Topic, err error) {
+	err = dao.Topic.Ctx(ctx).Where("user_id", userId).Scan(&topics)
+	return
+}
+
+func (i *iTopic) GetAllByPage(ctx context.Context, userId int, page, size int) (topics []entity.Topic, allSize int, err error) {
+	err = dao.Topic.Ctx(ctx).Where("user_id", userId).Page(page, size).Scan(&topics)
+	allSize, err = dao.Topic.Ctx(ctx).Where("user_id", userId).Count()
+	return
+}
+
+func (i *iTopic) GetAllByPageAndMsg(ctx context.Context, userId int, page, size int, msg string) (topics []entity.Topic, allSize int, err error) {
+	if msgInPlatFrom(msg) {
+		err = dao.Topic.Ctx(ctx).Where("user_id", userId).Where(dao.Topic.Columns().PlatForm, msg).Page(page, size).Scan(&topics)
+		allSize, err = dao.Topic.Ctx(ctx).Where("user_id", userId).Where(dao.Topic.Columns().PlatForm, msg).Count()
+		return
+	}
+	if msgInTType(msg) {
+		if msg == "上报" {
+			err = dao.Topic.Ctx(ctx).Where("user_id", userId).Where(dao.Topic.Columns().TType, 0).Page(page, size).Scan(&topics)
+			allSize, err = dao.Topic.Ctx(ctx).Where("user_id", userId).Where(dao.Topic.Columns().TType, 0).Count()
+		} else {
+			err = dao.Topic.Ctx(ctx).Where("user_id", userId).Where(dao.Topic.Columns().TType, 1).Page(page, size).Scan(&topics)
+			allSize, err = dao.Topic.Ctx(ctx).Where("user_id", userId).Where(dao.Topic.Columns().TType, 1).Count()
+		}
+		return
+	}
+	err = dao.Topic.Ctx(ctx).Where("user_id", userId).Where(dao.Topic.Columns().Topic, "%"+msg+"%").Page(page, size).Scan(&topics)
+	allSize, err = dao.Topic.Ctx(ctx).Where("user_id", userId).Where(dao.Topic.Columns().Topic, "%"+msg+"%").Count()
+	return
+}
+
+func msgInPlatFrom(msg string) bool {
+	return msg == "阿里云" || msg == "腾讯云" || msg == "华为云"
+}
+
+func msgInTType(msg string) bool {
+	return msg == "上报" || msg == "下行"
+}

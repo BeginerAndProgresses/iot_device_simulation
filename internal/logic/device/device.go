@@ -323,7 +323,7 @@ func getSubInfo(deviceId, topicId int, topic string) func(mqtt.Client, mqtt.Mess
 	return func(client mqtt.Client, msg mqtt.Message) {
 		insertSubInfo(entity.SubscribeInfo{DeviceId: deviceId, Topic: topic, SubName: topic, Info: string(msg.Payload())})
 		response := &websocket.WResponse{
-			Event: "sub_info",
+			Event: "massage",
 			Data: g.Map{
 				"topic": topic,
 				"msg":   msg.Payload(),

@@ -26,6 +26,12 @@ type ITopic interface {
 	GetAllUpByDeviceIdTopics(ctx context.Context, userId, deviceId int) (topics []entity.Topic, err error)
 	// GetAllDownByDeviceIdTopics 根据设备id获取平台所有下拉topic
 	GetAllDownByDeviceIdTopics(ctx context.Context, userId, deviceId int) (topics []entity.Topic, err error)
+	// GetAllByPage 分页获取所有topic
+	GetAllByPage(ctx context.Context, userId int, page, size int) (topics []entity.Topic, allSize int, err error)
+	// GetAll 获取所有topic
+	GetAll(ctx context.Context, userId int) (topics []entity.Topic, err error)
+	// GetAllByPageAndMsg 分页和msg获取所有topic
+	GetAllByPageAndMsg(ctx context.Context, userId int, page, size int, msg string) (topics []entity.Topic, allSize int, err error)
 }
 
 func Topic() ITopic {

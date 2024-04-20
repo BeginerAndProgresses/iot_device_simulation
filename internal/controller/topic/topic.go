@@ -104,3 +104,28 @@ func (c *cTopic) SearchAllDownByDeviceIdTopics(ctx context.Context, req *topic.S
 	res.Topic = get
 	return
 }
+
+func (c *cTopic) SearchAll(ctx context.Context, req *topic.SearchAllReq) (res *topic.SearchAllRes, err error) {
+	topics, size, err := service.Topic().GetAllByPage(ctx, req.UserId, req.Page, req.Size)
+	res = &topic.SearchAllRes{}
+	if err != nil {
+		res.Code = 0
+		return
+	}
+	res.Code = 1
+	res.Topic = topics
+	res.Size = size
+	return
+}
+
+func (c *cTopic) SearchByMsgAll(ctx context.Context, req *topic.SearchAllByMsgReq) (res *topic.SearchAllByMsgRes, err error) {
+	topics, size, err := service.Topic().GetAllByPageAndMsg(ctx, req.UserId, req.Page, req.Size, req.Msg)
+	res = &topic.SearchAllByMsgRes{}
+	if err != nil {
+		res.Code = 0
+	}
+	res.Code = 1
+	res.Size = size
+	res.Topic = topics
+	return
+}

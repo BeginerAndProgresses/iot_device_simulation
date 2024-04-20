@@ -90,3 +90,31 @@ type SearchAllDownTopicByDeviceIdRes struct {
 	Code  int            `json:"code" dc:"是否有返回值"`
 	Topic []entity.Topic `json:"topic" dc:"主题"`
 }
+
+// SearchAllReq 分页查询请求
+type SearchAllReq struct {
+	g.Meta `path:"/get_all_topic" method:"get"`
+	UserId int `p:"user_id" v:"required|integer|min:1#userid不能为空|id只能是整数|最小值不应小于1" dc:"user_id"`
+	Page   int `p:"page" v:"required|integer|min:1#page不能为空|page只能是整数|最小值不应小于1" dc:"page"`
+	Size   int `p:"size" v:"required|integer|min:1#size不能为空|size只能是整数|最小值不应小于1" dc:"size"`
+}
+
+type SearchAllRes struct {
+	Code  int            `json:"code" dc:"是否有返回值"`
+	Topic []entity.Topic `json:"topic" dc:"主题"`
+	Size  int            `json:"size" dc:"size"`
+}
+
+type SearchAllByMsgReq struct {
+	g.Meta `path:"/get_all_by_msg" method:"get"`
+	UserId int    `p:"user_id" v:"required|integer|min:1#userid不能为空|id只能是整数|最小值不应小于1" dc:"user_id"`
+	Page   int    `p:"page" v:"required|integer|min:1#page不能为空|page只能是整数|最小值不应小于1" dc:"page"`
+	Size   int    `p:"size" v:"required|integer|min:1#size不能为空|size只能是整数|最小值不应小于1" dc:"size"`
+	Msg    string `p:"msg" v:"required#msg不能为空" dc:"msg"`
+}
+
+type SearchAllByMsgRes struct {
+	Code  int            `json:"code" dc:"是否有返回值"`
+	Topic []entity.Topic `json:"topic" dc:"主题"`
+	Size  int            `json:"size" dc:"size"`
+}

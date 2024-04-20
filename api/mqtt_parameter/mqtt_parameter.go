@@ -28,7 +28,6 @@ type EditReq struct {
 	ServerAddress string `p:"server_address"  dc:"服务器地址"`
 	Username      string `p:"username" dc:"用户名"`
 	Password      string `p:"password" dc:"密码"`
-	UserId        int    `p:"user_id" v:"required|integer#user_id不能为空|user_id应为整数" dc:"user_id"`
 }
 
 type EditRes struct {
@@ -50,6 +49,16 @@ type SearchReq struct {
 }
 
 type SearchRes struct {
+	Code int                  `json:"code" dc:"是否有值"`
+	Mqtt entity.MqttParameter `json:"mqtt" dc:"实体"`
+}
+
+type SearchByDeviceIdReq struct {
+	g.Meta   `path:"/search_by_did" method:"get"`
+	DeviceId int `p:"device_id" v:"required|integer#device_id不能为空|device_id应为整数" dc:"device_id"`
+}
+
+type SearchByDeviceIdRes struct {
 	Code int                  `json:"code" dc:"是否有值"`
 	Mqtt entity.MqttParameter `json:"mqtt" dc:"实体"`
 }

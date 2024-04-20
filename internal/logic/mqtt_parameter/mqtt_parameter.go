@@ -41,3 +41,15 @@ func (i *iMqtt) Delete(ctx context.Context, id int) (err error) {
 	_, err = dao.MqttParameter.Ctx(ctx).Where(dao.MqttParameter.Columns().Id, id).Delete()
 	return
 }
+
+func (i *iMqtt) GetByDeviceId(ctx context.Context, deviceId int) (mqtt entity.MqttParameter, err error) {
+	device := entity.Device{}
+	err = dao.Device.Ctx(ctx).Where(dao.Device.Columns().Id, deviceId).Scan(&device)
+	if err != nil {
+		return
+	}
+	if device.MqttParameterId != 0 {
+		err = dao.MqttParameter.Ctx(ctx).Where(dao.MqttParameter.Columns().Id, device.MqttParameterId).Scan(&mqtt)
+	}
+	return
+}
