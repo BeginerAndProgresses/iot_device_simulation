@@ -21,6 +21,7 @@ import (
 func init() {
 	service.RegisterDevice(New())
 	// 将所用设备状态调整为未连接
+	service.RegisterSimulateDevice(NewSimulateDevice())
 }
 
 func New() *iDevice {
@@ -158,22 +159,8 @@ func (i *iDevice) InfoPost(ctx context.Context, userId, deviceId, topicId int, j
 	)
 	err = dao.Device.Ctx(ctx).Where("id", deviceId).Scan(&t_dev)
 	err = dao.Topic.Ctx(ctx).Where("id", topicId).Scan(&t_topic)
-	m := make(map[string]string)
-	switch t_topic.PlatForm {
-	case "阿里云":
-		m["deviceName"] = t_dev.DeviceName
-		m["productKey"] = t_dev.ProductId
-		topic = util.VariableString2String(t_topic.Topic, m, "${", "}")
-	case "腾讯云":
-		m["DeviceName"] = t_dev.DeviceName
-		m["ProductID"] = t_dev.ProductId
-		topic = util.VariableString2String(t_topic.Topic, m, "{", "}")
-	case "OneNet":
-	case "华为云":
-		err = dao.MqttParameter.Ctx(ctx).Where("id", t_dev.MqttParameterId).Scan(&t_mqtt)
-		m["device_id"] = t_mqtt.Username
-		topic = util.VariableString2String(t_topic.Topic, m, "{", "}")
-	}
+	err = dao.MqttParameter.Ctx(ctx).Where("id", t_dev.MqttParameterId).Scan(&t_mqtt)
+	topic = conn.TopicPadding(t_topic.PlatForm, t_topic.Topic, t_dev.DeviceName, t_dev.ProductId, t_mqtt.Username)
 	nowDate := time.Now().String()[:10]
 	result, err := dao.PublishInfo.Ctx(ctx).Data(do.PublishInfo{UserId: userId, Topic: topic, Json: json, PubDate: nowDate}).Insert()
 	id, err := result.LastInsertId()

@@ -151,3 +151,14 @@ type SearchSubTopicRes struct {
 	Code     int               `json:"code" dc:"是否有返回值"`
 	SubTopic []entity.SubTopic `json:"sub_topic" dc:"订阅的主题"`
 }
+
+type StartSimulatorReq struct {
+	g.Meta   `path:"/start_simulator" method:"get"`
+	DeviceId int `p:"device_id" v:"required|integer|integer|min:1#deviceid不能为空|id只能是整数|最小值不应小于1" dc:"device_id"`
+	Interval int `p:"interval" v:"required|integer|min:1#interval不能为空|id只能是整数|最小值不应小于1" dc:"时间间隔"`
+	Topic    int `p:"topic_id" v:"required|integer|min:1#topic不能为空|id只能是整数|最小值不应小于1" dc:"topic_id"`
+}
+
+type StartSimulatorRes struct {
+	Code int `json:"code" dc:"返回状态"`
+}

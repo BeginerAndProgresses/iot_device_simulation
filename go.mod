@@ -1,6 +1,6 @@
 module iot_device_simulation
 
-go 1.18
+go 1.21
 
 require (
 	github.com/eclipse/paho.mqtt.golang v1.4.3

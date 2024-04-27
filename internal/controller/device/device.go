@@ -8,12 +8,6 @@ import (
 	"iot_device_simulation/internal/service"
 )
 
-// DeviceController 用于注册路由
-var DeviceController = &cDev{}
-
-type cDev struct {
-}
-
 func (c *cDev) Add(ctx context.Context, req *device.AddReq) (res *device.AddRes, err error) {
 	id, err := service.Device().Insert(ctx, do.Device{
 		DeviceName: req.DeviceName,

@@ -6,6 +6,7 @@ import (
 	"iot_device_simulation/internal/cmd"
 	_ "iot_device_simulation/internal/logic"
 	_ "iot_device_simulation/internal/packed"
+	_ "iot_device_simulation/utility"
 )
 
 func main() {

@@ -7,6 +7,7 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"iot_device_simulation/internal/model/entity"
 	"iot_device_simulation/internal/packed/util"
+	"log"
 	"sync"
 	"time"
 )
@@ -84,6 +85,7 @@ func Conn(device_id int, parameter *entity.MqttParameter) (err error) {
 
 // ConcConn 并发连接
 func ConcConn(device entity.Device, parameter *entity.MqttParameter) (err error) {
+	fmt.Printf("parameter:", *parameter)
 	connChannel.Lock()
 	connChannel.Chans[device.Id] = make(chan int)
 	connChannel.Unlock()
@@ -102,11 +104,13 @@ func ConcConn(device entity.Device, parameter *entity.MqttParameter) (err error)
 			opts.KeepAlive = 60000 // 腾讯云 0-90秒 阿里云60秒起 华为云标的默认60秒，但是如果配置将会认证失败
 		}
 	}
+	log.Println("opts:", opts)
 	client := mqtt.NewClient(opts)
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
 		fmt.Printf("Error connecting device_id:%d,Error:%v\n", device.Id, token.Error())
 		return token.Error()
 	}
+	fmt.Printf("Connected device_id:%d\n", device.Id)
 	// connChannel.Chans[device_id] 通道中传入不同值进行不同操作，0停止，1发送，2订阅
 	for client.IsConnected() {
 		select {

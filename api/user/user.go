@@ -21,6 +21,7 @@ type UserInfo struct {
 type LoginRes struct {
 	Token    string    `json:"token" dc:"验证token"`
 	UserInfo *UserInfo `json:"user_info"`
+	Msg      string    `json:"msg"`
 }
 
 type RegisterReq struct {

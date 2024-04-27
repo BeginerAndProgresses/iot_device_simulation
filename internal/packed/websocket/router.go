@@ -7,10 +7,8 @@ import (
 
 const (
 	Error = "error"
-	Login = "login"
 	Join  = "join"
 	Quit  = "quit"
-	IsApp = "is_app"
 	Ping  = "ping"
 	Text  = "text"
 )

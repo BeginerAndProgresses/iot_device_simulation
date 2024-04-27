@@ -8,7 +8,9 @@ import (
 	"iot_device_simulation/internal/controller/device"
 	"iot_device_simulation/internal/controller/mqtt_parameter"
 	"iot_device_simulation/internal/controller/topic"
+	"iot_device_simulation/internal/controller/transducers"
 	"iot_device_simulation/internal/controller/user"
+	"iot_device_simulation/internal/packed/conn"
 	"iot_device_simulation/internal/packed/websocket"
 )
 
@@ -19,6 +21,10 @@ var (
 		Brief: "start http server",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 			websocket.StartWebSocket(ctx)
+			err = conn.StartMqttServe()
+			if err != nil {
+				panic(err)
+			}
 			s := g.Server()
 			s.Group("/", func(group *ghttp.RouterGroup) {
 				// 二者顺序不可逆转不然请求通过Auth也通不过CORS
@@ -36,6 +42,9 @@ var (
 				})
 				group.Group("/topic", func(group *ghttp.RouterGroup) {
 					group.Bind(topic.TopicController)
+				})
+				group.Group("/transducers", func(group *ghttp.RouterGroup) {
+					group.Bind(transducers.TransducersController)
 				})
 				group.GET("/swagger", func(req *ghttp.Request) {
 					req.Response.WriteTpl("/swagger.html")

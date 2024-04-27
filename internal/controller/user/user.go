@@ -29,6 +29,11 @@ func (c *cUser) Login(ctx context.Context, req *user.LoginReq) (res *user.LoginR
 			},
 		}
 	}
+	if err != nil {
+		res = &user.LoginRes{
+			Msg: err.Error(),
+		}
+	}
 	return
 }
 
